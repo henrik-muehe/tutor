@@ -93,14 +93,13 @@
 	.row
 		.col-md-12
 			%h2 
-				Tutorial
-				= @group.name
-				, 
+				Tutorial #{@group.name}, 
 				- if @week.start < Time.now and (Time.now - @week.start) < (3600*24*7) then
 					current week
 				- else
-					Week of 
-					= @week.start.strftime("%d.%m.%Y")
+					%span.text-danger
+						Week of 
+						= @week.start.strftime("%d.%m.%Y")
 				.btn-group(style="margin-left:20px; margin-bottom: 7px")
 					%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
 						%i.glyphicon.glyphicon-time 
