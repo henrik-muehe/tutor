@@ -87,9 +87,9 @@ class TutorialController < ApplicationController
 
 		 # Find most sensible week
 		 if params["week_id"] then
-			@week = @group.course.find(params["week_id"])
+			@week = Week.find(params["week_id"])
 		 else
-			@week = @group.course.weeks.min_by { |w| (w.start - Time.now).abs }
+			@week = @group.course.weeks.where("start <= ?", Time.now).min_by { |w| (Time.now - w.start).abs }
 		 end
 
 		 # Find all students
