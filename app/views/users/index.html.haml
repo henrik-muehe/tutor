@@ -6,6 +6,9 @@
       %th Email
       %th Firstname
       %th Lastname
+      %th Last
+      %th Current
+      %th Count
       %th Admin
       %th
       %th
@@ -18,6 +21,9 @@
         %td= user.email
         %td= user.firstname
         %td= user.lastname
+        %td= user.last_sign_in_at
+        %td= user.current_sign_in_at
+        %td= user.sign_in_count
         %td= user.admin
         %td= link_to 'Show', user
         %td= link_to 'Edit', edit_user_path(user)
