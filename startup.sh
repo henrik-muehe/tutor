@@ -1,9 +1,17 @@
 #!/bin/bash
 
-source /usr/local/rvm/scripts/rvm
-cd /src ; rvm use .
-cd /src ; bundle install
-cd /src ; bower install --allow-root
+echo 	"cd /src ; \
+		source /usr/local/rvm/scripts/rvm ;
+		rvm use . ; \
+		bundle install ; \
+		bower install --allow-root; \
+		rake db:migrate RAILS_ENV=production; 
+		RAILS_ENV=production bundle exec rake assets:precompile ;
+		rails server mongrel -p 8080 -e production;" > /src/sudoscript
 chown -R user: /src
-script /tmp/script -c 'tmux new -d "cd /src ; sudo -u user -- rails server mongrel -p 8080 -e production"'
-/usr/sbin/sshd -D
+chown -R user: /usr/local/rvm/
+chmod 755 /src/sudoscript
+
+/usr/sbin/sshd &
+#sudo -i -u user -- bash /src/sudoscript
+script /tmp/script -c 'tmux new "cd /src ; sudo -i -u user -- bash /src/sudoscript"'

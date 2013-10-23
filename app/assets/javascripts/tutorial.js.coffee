@@ -51,8 +51,15 @@ window.tutorial = (group_id) =>
 
 	$("#random").click =>
 		$("#wheel").modal('show')
-		wheel.segments = [ "henrik", "flo", "moritz", "then", "schmidt","henrik", "flo", "moritz", "then", "schmidt","henrik", "flo", "moritz", "then", "schmidt" ]
+		wheel.segments = []
+		for r in $("tbody tr")
+			points=$(r).find("input[type=text]").val()
+			lastname=$(r).find("td").eq(1).text()
+			firstname=$(r).find("td").eq(2).text()
+			if points >= 0 && $(r).attr("data-othergroup") != "1"
+				wheel.segments.push "#{firstname} #{lastname}"
 		wheel.update();
+		wheel.spin();
 
 	$("#search").change (event,m) => 
 		$(".move").removeClass("disabled")
