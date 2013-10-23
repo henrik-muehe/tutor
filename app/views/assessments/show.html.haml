@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Student:
+  = @assessment.student_id
+%p
+  %b User:
+  = @assessment.user_id
+%p
+  %b Value:
+  = @assessment.value
+%p
+  %b Remark:
+  = @assessment.remark
+%p
+  %b Week:
+  = @assessment.week
+
+= link_to 'Edit', edit_assessment_path(@assessment)
+\|
+= link_to 'Back', assessments_path

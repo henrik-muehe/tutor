@@ -1,0 +1,121 @@
+- if current_user.groups.length > 0
+
+	.modal.fade#time(tabindex="-1")
+		.modal-dialog
+			.modal-content
+				.modal-header
+					%button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+					%h4.modal-title Switch Tutorial
+				.modal-body
+					= form_for :tutorial, :url => "/tutorial", :method => "get" do |f|
+						.form-group
+							%label Course
+							= f.collection_select :course_id, Course.all(:order => "created_at DESC" ), :id, :name, { selected: @group ? @group.course.id : 0 }, { :class => "form-control" }
+						.form-group
+							%label Group
+							= f.collection_select :group_id, Group.all(:order => :name ), :id, :select_name, { selected: @group ? @group.id : 0 }, { :class => "form-control" }
+						.form-group
+							%label Week
+							= f.collection_select :week_id, @group.course.weeks(:order => :start), :id, :select_name, { selected: @week ? @week.id : 0 }, { :class => "form-control" }
+				.modal-footer
+					%button.btn.btn-default(data-dismiss="modal") Close
+					- #%button.btn.btn-primary Switch
+
+
+	.modal.fade#wheel(tabindex="-1")
+		.modal-dialog(style="width: 1000px")
+			.modal-content
+				.modal-header
+					%button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+					%h4.modal-title Select Random Student
+				.modal-body
+					%div(style="width:1000px; height: 600px;")
+						%canvas#canvas(width="1000" height="600")
+				.modal-footer
+					%button.btn.btn-default(data-dismiss="modal") Close
+
+
+	.modal.fade#manage
+		.modal-dialog
+			.modal-content
+				.modal-header
+					%button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+					%h4.modal-title Manage Students
+				.modal-body
+					.row
+						.col-md-12
+							%h4 Find a student
+							= form_tag({:action => "move", :method=>"post"},{:id=>"move"}) do |f|
+								%input{:type=>"hidden", :name=>"group_id", :value=>@group.id}
+								%input{:type=>"hidden", :name=>"week_id", :value=>@week.id}
+								.form-group
+									%input.form-control#search(name="student_id")
+								.form-group
+									.radio
+										%label
+											%input(type="radio" name="mode" value="temp" checked=true)
+											Move temporarily
+									.radio
+										%label
+											%input(type="radio" name="mode" value="perm")
+											Move permanently
+									%button.disabled.move#moveperm.btn.btn-default.sort.pull-right(type="submit") Move!
+
+					.row
+						.col-md-12
+							%h4 Add a student
+							= form_tag({ :action => "create_student", :method => "post" }, { :id=>"addstudent", :class => "form-horizontal" }) do
+								.div.error.text-danger
+								%input{:type=>"hidden", :name=>"group_id", :value=>@group.id}
+								%input{:type=>"hidden", :name=>"week_id", :value=>@week.id}
+								.form-group
+									%label.col-md-3.control-label Firstname
+									.col-md-9
+										%input.form-control.input-sm(type="text" name="firstname")
+								.form-group
+									%label.col-md-3.control-label Lastname
+									.col-md-9
+										%input.form-control.input-sm(type="text" name="lastname")
+								.form-group
+									%label.col-md-3.control-label MatrNr
+									.col-md-9
+										%input.form-control.input-sm(type="text" name="matrnr")
+								.form-group
+									%label.col-md-3.control-label Email
+									.col-md-9
+										%input.form-control.input-sm(type="text" name="email")
+								.form-group
+									%button.btn.btn-default.pull-right(type="submit") Add student
+
+				.modal-footer
+					%button.btn.btn-default(data-dismiss="modal") Close
+
+	.row
+		.col-md-12
+			%h2 
+				Tutorial
+				= @group.name
+				.btn-group(style="margin-left:20px; margin-bottom: 7px")
+					%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
+						%i.glyphicon.glyphicon-time 
+						Switch
+					%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
+						%i.glyphicon.glyphicon-plus 
+						Find/Add Student
+					%button#sort.btn.btn-default.enable-tooltip(title="Sort.")
+						%i.glyphicon.glyphicon-sort-by-alphabet 
+						Sort
+					%button#random.btn.btn-default.enable-tooltip(title="Select random student.")
+						%i.glyphicon.glyphicon-random 
+						Random
+					%a#logout.btn.btn-default.enable-tooltop(href=destroy_user_session_path title="Logout")
+						%i.glyphicon.glyphicon-log-out
+						Logout
+
+	#table
+		= render :partial => 'students_table'
+
+
+
+	:coffeescript
+		window.tutorial(#{@group.id})

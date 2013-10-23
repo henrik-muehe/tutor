@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @group.name
+%p
+  %b Start:
+  = @group.start
+%p
+  %b User:
+  = @group.user_id
+%p
+  %b Course:
+  = @group.course_id
+
+= link_to 'Edit', edit_group_path(@group)
+\|
+= link_to 'Back', groups_path

@@ -1,0 +1,27 @@
+- a = Assessment.where(:student => s, :week => @week).first || Assessment.new(:value => -1, :user=>current_user, :student => s, :week => @week, :group => @group)
+%tr{ "data-id" => s.id, "data-othergroup" => (a.user != current_user && a.value >= 0) ? "1" : "0" }
+	%td
+		= form_for a, :method=>:post,:html => { :class => "form-inline" } do |f|
+			= f.hidden_field :user_id
+			= f.hidden_field :week_id
+			= f.hidden_field :student_id
+			= f.hidden_field :group_id
+			.input-group.pull-left(style="width: 120px")
+				%span.input-group-btn
+					%button.btn.btn-default.point-adjust.btn-sm(type="button" data-value="-1") -
+				= f.text_field :value, :class=>"form-control input-sm"
+				%span.input-group-btn
+					%button.btn.btn-default.point-adjust.btn-sm(type="button" data-value="+1") +
+
+			- if a.user != current_user && a.value >= 0
+				.pull-left(style="margin-left:10px")
+					.div.enable-tooltip(title="Attended tutorial #{a.group.name} by #{a.user.name}.")
+						%i.glyphicon.glyphicon-plane
+			- if a.user == current_user && s.groups.where(:course => @group.course).first.user != current_user
+				.pull-left(style="margin-left:10px")
+					.div.enable-tooltip(title="This student is temporarily in this group. His original group is #{s.groups.where(:course => @group.course).first.name} held by #{s.groups.where(:course => @group.course).first.user.name}.")
+						%i.glyphicon.glyphicon-pushpin
+
+	%td= s.lastname
+	%td= s.firstname
+	%td= s.email

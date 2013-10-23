@@ -1,0 +1,21 @@
+{
+  "name": "Debut2",
+  "version": "0.0.0",
+  "authors": [
+    "Henrik Mühe <muehe@in.tum.de>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "directory": "vendor/assets/components",
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "select2": "~3.4.3"
+  }
+}
