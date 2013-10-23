@@ -57,7 +57,7 @@
 								- else
 									.navbar-form.navbar-right
 										.pull-right(style="margin-left: 10px")
-											= button_to 'Logout', destroy_user_session_path, { :method => :delete, :class => "btn btn-xs btn-default navbar-btn"}
+											= button_to 'Logout', destroy_user_session_path, { :method => :get, :class => "btn btn-xs btn-default navbar-btn"}
 										.pull-right.navbar-btn
 											- if current_user.admin
 												= switch_user_select 
