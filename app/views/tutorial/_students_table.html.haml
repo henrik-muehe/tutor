@@ -1,12 +1,13 @@
-%table.table.table-striped.table-condensed
-	- if false 
-		%thead
-			%tr
-				%th Points
-				%th Lastname
-				%th Firstname
-				%th Email
+.table-responsive
+	%table.table.table-striped.table-condensed
+		- if false 
+			%thead
+				%tr
+					%th Points
+					%th Lastname
+					%th Firstname
+					%th Email
 
-	%tbody
-		- @students.each do |s|
-			= render :partial => 'students_row', :locals => { :s => s } 
+		%tbody
+			- @students.each do |s|
+				= render :partial => 'students_row', :locals => { :s => s } 

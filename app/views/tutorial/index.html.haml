@@ -91,7 +91,7 @@
 					%button.btn.btn-default(data-dismiss="modal") Close
 
 	.row
-		.col-md-12
+		.col-md-5
 			%h2 
 				Tutorial #{@group.name}, 
 				- if @week.start < Time.now and (Time.now - @week.start) < (3600*24*7) then
@@ -100,22 +100,24 @@
 					%span.text-danger
 						Week of 
 						= @week.start.strftime("%d.%m.%Y")
-				.btn-group(style="margin-left:20px; margin-bottom: 7px")
-					%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
-						%i.glyphicon.glyphicon-time 
-						Switch
-					%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
-						%i.glyphicon.glyphicon-plus 
-						Find/Add Student
-					%button#sort.btn.btn-default.enable-tooltip(title="Sort.")
-						%i.glyphicon.glyphicon-sort-by-alphabet 
-						Sort
-					%button#random.btn.btn-default.enable-tooltip(title="Select random student.")
-						%i.glyphicon.glyphicon-random 
-						Random
-					%a#logout.btn.btn-default.enable-tooltop(href=destroy_user_session_path title="Logout")
-						%i.glyphicon.glyphicon-log-out
-						Logout
+		.col-md-7
+			%h2 
+			.btn-group.pull-right
+				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
+					%i.glyphicon.glyphicon-time 
+					Switch
+				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
+					%i.glyphicon.glyphicon-plus 
+					Find/Add Student
+				%button#sort.btn.btn-default.enable-tooltip(title="Sort.")
+					%i.glyphicon.glyphicon-sort-by-alphabet 
+					Sort
+				%button#random.btn.btn-default.enable-tooltip(title="Select random student.")
+					%i.glyphicon.glyphicon-random 
+					Random
+				%a#logout.btn.btn-default.enable-tooltip(href=destroy_user_session_path title="Logout")
+					%i.glyphicon.glyphicon-log-out
+					Logout
 
 	#table
 		= render :partial => 'students_table'
