@@ -17,7 +17,7 @@
       %tr
         %td= group.name
         %td= group.students.size
-        %td= group.start.strftime("%a %H:%M")
+        %td= group.start ? group.start.strftime("%a %H:%M") : "unassigned"
         %td= group.user ? group.user.email :  "unassgined"
         %td= group.course.name
         %td= link_to 'Show', group
