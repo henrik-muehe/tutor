@@ -111,7 +111,7 @@ var wheel = {
 	init : function(optionList) {
 		try {
 			wheel.initWheel();
-			wheel.initAudio();
+			//wheel.initAudio();
 			wheel.initCanvas();
 			wheel.draw();
 
