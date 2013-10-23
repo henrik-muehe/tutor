@@ -5,7 +5,7 @@
 		%meta(name="viewport" content="width=device-width, initial-scale=1.0")
 		%title Debut2
 		= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true, :debug => true
-		= javascript_include_tag "application", "data-turbolinks-track" => true
+		= javascript_include_tag "application", "data-turbolinks-track" => true, :debug => true
 		= csrf_meta_tags
 		- if current_user && current_user.admin
 			:css
