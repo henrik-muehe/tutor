@@ -1,7 +1,7 @@
 - a = Assessment.where(:student => s, :week => @week).first || Assessment.new(:value => -1, :user=>current_user, :student => s, :week => @week, :group => @group)
 %tr{ "data-id" => s.id, "data-othergroup" => (a.user != @group.user && a.value >= 0) ? "1" : "0" }
 	%td
-		= form_for a, :method=>:post,:html => { :class => "form-inline" } do |f|
+		= form_for a, :method=>:post,:html => { :class => "form-inline", :onsubmit => "return false;" } do |f|
 			= f.hidden_field :user_id
 			= f.hidden_field :week_id
 			= f.hidden_field :student_id
@@ -9,7 +9,7 @@
 			.input-group.pull-left(style="width: 120px")
 				%span.input-group-btn
 					%button.btn.btn-default.point-adjust.btn-sm(type="button" data-value="-1") -
-				= f.text_field :value, :class=>"form-control input-sm"
+				= f.text_field :value, :class=>"form-control input-sm", :readonly => true, :style => "background-color: white"
 				%span.input-group-btn
 					%button.btn.btn-default.point-adjust.btn-sm(type="button" data-value="+1") +
 
