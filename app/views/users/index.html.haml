@@ -4,6 +4,8 @@
   %thead
     %tr
       %th Email
+      %th Firstname
+      %th Lastname
       %th Admin
       %th
       %th
@@ -14,6 +16,8 @@
     - @users.each do |user|
       %tr
         %td= user.email
+        %td= user.firstname
+        %td= user.lastname
         %td= user.admin
         %td= link_to 'Show', user
         %td= link_to 'Edit', edit_user_path(user)
