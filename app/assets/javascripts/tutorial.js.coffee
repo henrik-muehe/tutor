@@ -32,11 +32,10 @@ window.tutorial = (group_id) =>
 		$(rows).removeClass('warning')
 		$(rows).removeClass('danger')
 		rows.sort (a,b) =>
-			an = $(a).find("td").eq(1).text()
-			bn = $(b).find("td").eq(1).text()
+			an = $(a).find("td.lastname").text()
+			bn = $(b).find("td.lastname").text()
 			return if an < bn then -1 else 1
-		a = []
-		b = []
+		[a,b] = [[],[]]
 		for r in rows 
 			$(r).attr("title",$(r).attr("data-original-title"))
 			points = parseInt($(r).find("input[type=text]").val())
@@ -44,6 +43,7 @@ window.tutorial = (group_id) =>
 		$(a).addClass('warning')
 		$(b).addClass('danger')
 		rows = a.concat(b)
+		$(r).find("td.count").text(parseInt(index)+1) for index,r of rows
 		$("table tbody").append($(rows))
 		bind()
 
@@ -54,8 +54,8 @@ window.tutorial = (group_id) =>
 		wheel.segments = []
 		for r in $("tbody tr")
 			points=$(r).find("input[type=text]").val()
-			lastname=$(r).find("td").eq(1).text()
-			firstname=$(r).find("td").eq(2).text()
+			lastname=$(r).find("td.lastname").text()
+			firstname=$(r).find("td.firstname").text()
 			if points >= 0 && $(r).attr("data-othergroup") != "1"
 				wheel.segments.push "#{firstname} #{lastname}"
 		if wheel.segments.length > 0

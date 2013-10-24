@@ -2,7 +2,10 @@ class Student < ActiveRecord::Base
 	has_and_belongs_to_many :groups
 	has_many :assessments
 
-	def total
-		0
+	def total(course, limit=Time.now)
+		groups = course.groups
+		weeks = course.weeks.where("start <= Datetime(?)", limit)
+		value = 0; assessments.where("group_id in (?) and week_id in (?)", groups, weeks).each { |a| value += a.value }
+		value
 	end
 end

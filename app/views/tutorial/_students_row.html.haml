@@ -1,5 +1,6 @@
 - a = Assessment.where(:student => s, :week => @week).first || Assessment.new(:value => -1, :user=>current_user, :student => s, :week => @week, :group => @group)
 %tr{ "data-id" => s.id, "data-othergroup" => (a.user != @group.user && a.value >= 0) ? "1" : "0" }
+	%td.count
 	%td
 		= form_for a, :method=>:post,:html => { :class => "form-inline", :onsubmit => "return false;" } do |f|
 			= f.hidden_field :user_id
@@ -22,6 +23,7 @@
 					.div.enable-tooltip(title="This student is temporarily in this group. His original group is #{s.groups.where(:course => @group.course).first.name} held by #{s.groups.where(:course => @group.course).first.user.name}.")
 						%i.glyphicon.glyphicon-pushpin
 
-	%td= s.lastname
-	%td= s.firstname
-	%td= s.email
+	%td.total= s.total(@group.course)
+	%td.lastname= s.lastname
+	%td.firstname= s.firstname
+	%td.email = s.email

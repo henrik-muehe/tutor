@@ -1,15 +1,18 @@
 Debut3::Application.routes.draw do
-  resources :weeks
 
-  get "tutorial", to: "tutorial#index"
+  get  "tutorial", to: "tutorial#index"
   post "tutorial/assess", to: "tutorial#assess"
-  get "tutorial/search", to: "tutorial#search"
+  get  "tutorial/search", to: "tutorial#search"
   post "tutorial/move", to: "tutorial#move"
   post "tutorial/create_student", to: "tutorial#create_student"
 
-  get "about", to: "about#index"
+  get  "about", to: "about#index"
 
-  get "load", to: "load#index"
+  get  "status", to: "status#new"
+  post "status/create", to: "status#create"
+  get  "status/show/:token", to: "status#show"
+
+  get  "load", to: "load#index"
   post "load/tumonline", to: "load#tumonline"
   post "load/tutoren", to: "load#tutoren"
 
@@ -17,6 +20,7 @@ Debut3::Application.routes.draw do
 
   devise_for :users
 
+  resources :weeks
   resources :assessments
   resources :groups
   resources :courses

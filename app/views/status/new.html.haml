@@ -1,0 +1,13 @@
+.row
+	.col-md-6.col-md-offset-3
+		%h1(style="margin-top:50px") Request status link.
+		%p Due to privacy concerns, we can not show your tutorial status directly. We can - however - send a link to a status page to your official TUM email address. By entering your MatrNr into this form, you request for a status link to be send to your email address. The link does <strongNOT expire</strong>, you can bookmark it and keep up to date with your status in realtime.
+		= form_tag({:action => "create", :method=>"post"}, {:class => "form-horizontal"}) do
+			.form-group
+				.col-md-4
+					%label MatrNr
+				.col-md-8
+					%input.form-control(name="matrnr")
+			.form-group
+				.col-md-12
+					%button.btn.btn-submit(type="submit") Send the status link!
