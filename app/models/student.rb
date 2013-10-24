@@ -5,7 +5,8 @@ class Student < ActiveRecord::Base
 	def total(course, limit=Time.now)
 		groups = course.groups
 		weeks = course.weeks.where("start <= Datetime(?)", limit)
-		value = 0; assessments.where("group_id in (?) and week_id in (?)", groups, weeks).each { |a| value += a.value }
+		weekAssessments = assessments.where("group_id in (?) and week_id in (?)", groups, weeks)
+		value = -(weeks.length - weekAssessments.length); weekAssessments.each { |a| value += a.value }
 		value
 	end
 end
