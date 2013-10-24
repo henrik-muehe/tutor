@@ -14,7 +14,7 @@ class TutorialController < ApplicationController
 
 		s = Student.create(
 			firstname: params["firstname"],
-			lastname: params["firstname"],
+			lastname: params["lastname"],
 			matrnr: params["matrnr"].to_i,
 			email: params["email"]
 		)
