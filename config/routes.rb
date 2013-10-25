@@ -5,6 +5,7 @@ Tutor::Application.routes.draw do
   get  "tutorial/search", to: "tutorial#search"
   post "tutorial/move", to: "tutorial#move"
   post "tutorial/create_student", to: "tutorial#create_student"
+  post "tutorial/settings", to: "tutorial#settings"
 
   get  "about", to: "about#index"
 

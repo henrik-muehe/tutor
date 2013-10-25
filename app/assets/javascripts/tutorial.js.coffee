@@ -16,7 +16,9 @@ window.tutorial = (group_id) =>
 			input = form.find("input[type=text]")
 
 			# Change visible points
-			input.val(parseInt(input.val()) + parseInt(el.attr("data-value")))
+			newValue = parseInt(input.val()) + parseInt(el.attr("data-value"))
+			newValue = if newValue < -1 then -1 else newValue
+			input.val(newValue)
 
 			# Push to server
 			$.post "/tutorial/assess", $(form).serialize(), ((data) => ), 'json'
@@ -82,6 +84,15 @@ window.tutorial = (group_id) =>
 
 		return false
 
+	$("#settings form").submit (e)=>
+		$("#settings .error").text('');
+		req = $.post "/tutorial/settings", $("#settings form").serialize(), (result) =>
+			$("#settings").modal('hide')
+		req.fail (e) =>
+			[status,data] = [e.status, JSON.parse(e.responseText)]
+			$("#settings .error").text(data.error);
+		false
+
 	$("#addstudent").submit (e)=>
 		# Request assessment
 		$("#addstudent .error").text('');
@@ -97,7 +108,6 @@ window.tutorial = (group_id) =>
 		$("#addstudent")[0].reset()
 
 		return false
-
 
 	$("#search").select2
 		placeholder: "Search for a student"

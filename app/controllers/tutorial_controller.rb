@@ -3,6 +3,15 @@ require 'awesome_print'
 class TutorialController < ApplicationController
 	before_filter :authenticate_user!
 
+	def settings
+		@group = Group.find(params["group_id"])
+		m = params["min"].to_i
+		return render :status => 400, :json => { error: "Minutes must be between 0 and 59" } if m < 0 || m > 59
+		o = @group.start
+		@group.start=Time.mktime(o.year, o.month, o.day, o.hour, m)
+		@group.save
+		return render :status => 200, :json => {}
+	end
 
 	def create_student
 		@group = Group.find(params["group_id"])
