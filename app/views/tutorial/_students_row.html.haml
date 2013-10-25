@@ -28,4 +28,4 @@
 		%a(href="mailto:#{s.email}")=s.lastname
 	%td.firstname
 		%a(href="mailto:#{s.email}")=s.firstname
-	%td.matrnr= "****#{s.matrnr%1000}"
+	%td.matrnr= "****#{"%03d" % (s.matrnr%1000)}"
