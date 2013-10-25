@@ -7,7 +7,7 @@ echo 	"cd /src ; \
 		bower install --allow-root; \
 		rake db:migrate RAILS_ENV=production; 
 		RAILS_ENV=production bundle exec rake assets:precompile ;
-		rails server mongrel -p 8080 -e production; sleep 20;" > /src/sudoscript
+		rails server mongrel -p 8080 -e production; sleep 5;" > /src/sudoscript
 rm -rf /src/tmp/
 mkdir /src/tmp
 chown -R user: /src
