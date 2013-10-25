@@ -88,6 +88,7 @@ window.tutorial = (group_id) =>
 		$("#settings .error").text('');
 		req = $.post "/tutorial/settings", $("#settings form").serialize(), (result) =>
 			$("#settings").modal('hide')
+			$("#btn-settings").removeClass("btn-danger")
 		req.fail (e) =>
 			[status,data] = [e.status, JSON.parse(e.responseText)]
 			$("#settings .error").text(data.error);

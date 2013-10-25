@@ -10,6 +10,7 @@ class TutorialController < ApplicationController
 		o = @group.start
 		@group.start=Time.mktime(o.year, o.month, o.day, o.hour, m)
 		@group.save
+		@group.touch
 		return render :status => 200, :json => {}
 	end
 

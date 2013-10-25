@@ -125,10 +125,11 @@
 				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
 					%i.glyphicon.glyphicon-time 
 					Switch
-				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group.")
+				- cls=(@group.updated_at < Time.parse("2013-10-25 15:41:17 +0200") ? "btn-danger" : "")
+				%button#btn-settings.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group." class=cls)
 					%i.glyphicon.glyphicon-cog
 					Settings
-				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
+				%button#btn-manage.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
 					%i.glyphicon.glyphicon-plus 
 					Find/Add Student
 				%button#sort.btn.btn-default.enable-tooltip(title="Partition students such that students who do not attend the tutorial this week are put closer to the end of the list. Use after marking everyone in the group as attending or missing.")
