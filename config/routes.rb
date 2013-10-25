@@ -1,4 +1,4 @@
-Debut3::Application.routes.draw do
+Tutor::Application.routes.draw do
 
   get  "tutorial", to: "tutorial#index"
   post "tutorial/assess", to: "tutorial#assess"

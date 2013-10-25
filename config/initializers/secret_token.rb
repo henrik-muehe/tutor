@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Debut3::Application.config.secret_key_base = '5dcaa3e4695a72235f128813e8ff63d02849f067413cb9aa036b684d3c0f57d0f9790fbfa777a46a8374ea0e8bb264061c300d22414a8f7f4df93cfdd1b9af68'
+Tutor::Application.config.secret_key_base = '5dcaa3e4695a72235f128813e8ff63d02849f067413cb9aa036b684d3c0f57d0f9790fbfa777a46a8374ea0e8bb264061c300d22414a8f7f4df93cfdd1b9af68'
