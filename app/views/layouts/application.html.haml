@@ -64,13 +64,14 @@
 									
 
 		%div.container
-			%div.col-md-12
-				- if notice
-					%p.notice= notice
-				- if alert
-					%p.alert= alert
+			- unless notice.blank? and alert.blank?		
+				%div.col-md-12
+					- if notice
+						%p.notice= notice
+					- if alert
+						%p.alert= alert
 
-				= yield
+			= yield
 
 
 			- if current_user && !current_user.admin and session["original_user"] && session["original_user"].admin
