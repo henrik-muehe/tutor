@@ -7,6 +7,12 @@ GIT
       activerecord (>= 4.0.0.beta, < 5)
       railties (>= 4.0.0.beta, < 5)
 
+GIT
+  remote: git://github.com/rails/exception_notification
+  revision: 192a49a02d63d28b23ed41cebadfedd490929cf1
+  specs:
+    exception_notification (1.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -147,6 +153,7 @@ DEPENDENCIES
   chronic
   coffee-rails (~> 4.0.0)
   devise
+  exception_notification!
   haml-rails
   jbuilder (~> 1.2)
   jquery-rails

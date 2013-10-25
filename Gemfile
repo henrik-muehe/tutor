@@ -51,3 +51,5 @@ gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 gem 'awesome_print'
 gem 'chronic'
 gem 'mongrel', ">= 0.0.0.beta"
+gem "exception_notification", :git => "git://github.com/rails/exception_notification", :require => 'exception_notifier'
+
