@@ -24,6 +24,8 @@
 						%i.glyphicon.glyphicon-pushpin
 
 	%td.total= s.total(@group.course)
-	%td.lastname= s.lastname
-	%td.firstname= s.firstname
-	%td.email = s.email
+	%td.lastname
+		%a(href="mailto:#{s.email}")=s.lastname
+	%td.firstname
+		%a(href="mailto:#{s.email}")=s.firstname
+	%td.matrnr= "****#{s.matrnr%1000}"
