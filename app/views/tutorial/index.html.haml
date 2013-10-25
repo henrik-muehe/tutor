@@ -1,5 +1,26 @@
 - if current_user.groups.length > 0
 
+	.modal.fade#settings(tabindex="-1")
+		.modal-dialog
+			.modal-content
+				= form_tag({:action => "settings"},{}) do |f|					
+					%input{:type=>"hidden", :name=>"group_id", :value=>@group.id}
+					.modal-header
+						%button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+						%h4.modal-title Group Settings
+					.modal-body
+						.div.error.text-danger
+						.form-group
+							%label Start hour
+							= text_field_tag :hour, @group.start.strftime("%H"), :class => "form-control", :disabled => "disabled"
+						.form-group
+							%label Start minutes
+							= text_field_tag :min, @group.start.strftime("%M"), :class => "form-control"
+					.modal-footer
+						%input.btn.btn-submit(type="submit" value="Save")
+						%button.btn.btn-default(data-dismiss="modal") Close
+
+
 	.modal.fade#time(tabindex="-1")
 		.modal-dialog
 			.modal-content
@@ -19,7 +40,6 @@
 							= f.collection_select :week_id, @group.course.weeks(:order => :start), :id, :select_name, { selected: @week ? @week.id : 0 }, { :class => "form-control" }
 				.modal-footer
 					%button.btn.btn-default(data-dismiss="modal") Close
-					- #%button.btn.btn-primary Switch
 
 
 	.modal.fade#wheel(tabindex="-1")
@@ -106,10 +126,13 @@
 				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
 					%i.glyphicon.glyphicon-time 
 					Switch
+				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group.")
+					%i.glyphicon.glyphicon-cog
+					Settings
 				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
 					%i.glyphicon.glyphicon-plus 
 					Find/Add Student
-				%button#sort.btn.btn-default.enable-tooltip(title="Sort.")
+				%button#sort.btn.btn-default.enable-tooltip(title="Partition students such that students who do not attend the tutorial this week are put closer to the end of the list. Use after marking everyone in the group as attending or missing.")
 					%i.glyphicon.glyphicon-sort-by-alphabet 
 					Sort
 				%button#random.btn.btn-default.enable-tooltip(title="Select random student.")
@@ -119,8 +142,10 @@
 					%i.glyphicon.glyphicon-log-out
 					Logout
 
-	#table
-		= render :partial => 'students_table'
+	.row
+		.col-md-12
+			#table
+				= render :partial => 'students_table'
 
 
 

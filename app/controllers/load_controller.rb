@@ -55,10 +55,12 @@ class LoadController < ApplicationController
           :password_confirmation => password
         }).find_or_create_by({:email => row["email"]})
 
-        g = c.groups.where(:one, :name => row["group"]).first
-        if g.nil? then
+        g = c.groups.where(:name => row["group"])
+        if g.length == 0 then
           g = c.groups.create(:name => row["group"])
           g.save
+        else
+          g=g.first
         end
         g.start = row["when"]
         g.room = row["room"]
