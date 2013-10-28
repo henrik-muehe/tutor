@@ -1,3 +1,22 @@
 .row
 	.col-md-6.col-md-offset-3
-		%h1(style="margin-top:50px") Status for #{@student.matrnr}
+		%h1(style="margin-top:50px") Status for #{@student.lastname}, #{@student.firstname}
+		- @student.groups.each do |g|
+			%h3= "#{g.course.name}, #{g.name}"
+			%table.table.table-striped.table-condensed
+				%thead
+					%tr
+						%th Week
+						%th Assessment
+						%th By
+				%tbody
+					- g.course.weeks.order(:start).each do |w|
+						- a = Assessment.where(:week => w, :student => @student).first
+						- home = a.present? && g != a.group ? "text-danger" : ""
+						%tr
+							%td= w.start.strftime("Week of %Y/%m/%d")
+							%td= a.present? ? a.value : -1
+							%td(class=home)= a.present? ? "#{a.user.name}, #{a.group.name}" : "---"
+
+			%strong Total until today: 
+			= @student.total(g.course)

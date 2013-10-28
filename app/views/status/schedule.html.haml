@@ -1,0 +1,38 @@
+.row
+	.col-md-12
+		%h1 Schedule
+.row
+	.col-md-12
+		#cal
+.row
+	.col-md-12(style="margin-top:30px")
+		%table.table.table-compact.table-striped
+			%thead
+				%tr
+					%th Uhrzeit
+					%th Raum
+					%th Gruppe
+					%th Tutor
+
+			%tbody
+				- Group.includes([:user]).order(:start).each do |g|
+					%tr
+						%td= g.start.strftime("%a %H:%M")
+						%td= g.room
+						%td= g.name
+						%td
+							%a(href="mailto:#{g.user.email}")= g.user.name
+
+:coffeescript
+	groups = #{Group.all.includes([:user]).to_json(:only => [:name,:start,:room,:updated_at], :include => { :user => { :only => [ :firstname, :lastname, :email ]} })};
+	$(document).ready =>
+		events=[]
+		for group in groups
+			events.push
+				title: "\#{group.name.replace(/Gruppe /,'')}, \#{group.room}\n\#{group.user.firstname.substr(0,1)}. \#{group.user.lastname}"
+				group: group
+				start: new Date(group.start)
+				end: new Date((new Date(group.start)).getTime() + 90*60000);
+				allDay: false
+				color: if (new Date(group.updated_at) < new Date("2013-10-25 15:41:17 +0200")) then 'red' else 'green'
+		window.buildCalendar("cal", events, (=>))

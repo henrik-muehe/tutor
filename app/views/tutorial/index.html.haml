@@ -160,8 +160,7 @@
 				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
 					%i.glyphicon.glyphicon-time 
 					Switch
-				- cls=(@group.updated_at < Time.parse("2013-10-25 15:41:17 +0200") ? "btn-danger" : "")
-				%button#btn-settings.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group." class=cls)
+				%button#btn-settings.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group.")
 					%i.glyphicon.glyphicon-cog
 					Settings
 				%button#btn-manage.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
@@ -180,6 +179,11 @@
 					%i.glyphicon.glyphicon-log-out
 					Logout
 
+	.row
+		.col-md-12
+			.panel.panel-danger#alert
+				.panel-heading Something went wrong!
+				.panel-body
 	.row
 		.col-md-12
 			#table

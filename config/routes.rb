@@ -13,6 +13,8 @@ Tutor::Application.routes.draw do
   get  "status", to: "status#new"
   post "status/create", to: "status#create"
   get  "status/show/:token", to: "status#show"
+  get  "status/schedule", to: "status#schedule"
+  get  "schedule", to: "status#schedule"
 
   get  "load", to: "load#index"
   post "load/tumonline", to: "load#tumonline"

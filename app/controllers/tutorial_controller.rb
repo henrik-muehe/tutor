@@ -23,13 +23,13 @@ class TutorialController < ApplicationController
 		end
 		@students.uniq!
 
-		ActionMailer::Base.mail(
+		ap ActionMailer::Base.mail(
 			:from => current_user.email, 
 			:to => current_user.email, 
 			:bcc => @students.map { |s| s.email }, 
 			:subject => "[" + @group.course.name + "] " + params["subject"],
 			:body => params["body"]
-		).deliver
+		)
 
 		return render :status => 200, :json => {}
 	end
@@ -83,13 +83,14 @@ class TutorialController < ApplicationController
 	end
 
 	def search
-		@group = Group.find(params["group_id"])
-		@results=[]
-		@group.course.groups.each do |g| 
-			g.students.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").each do |s|
-				@results << s
-			end
-		end
+		@results = Student.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").to_a
+		# @group = Group.find(params["group_id"])
+		# @results=[]
+		# @group.course.groups.each do |g| 
+		# 	g.students.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").each do |s|
+		# 		@results << s
+		# 	end
+		# end
 	end
 
 	def assess
@@ -134,7 +135,7 @@ class TutorialController < ApplicationController
 		 end
 
 		 # Find all students
-		 @students = @group.students + Assessment.where(:group => @group).map { |a| a.student }
+		 @students = @group.students + Assessment.where(:group => @group, :week => @week).map { |a| a.student }
 		 @students.uniq!
 		 @students.sort! { |a,b| a.lastname <=> b.lastname }
 	end

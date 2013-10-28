@@ -10,18 +10,26 @@ window.tutorial = (group_id) =>
 	$("#tutorial_week_id").change => window.location = "/tutorial/?group_id="+$("#tutorial_group_id").val()+"&week_id="+$("#tutorial_week_id").val()
 
 	bind = =>
+		$("#alert").hide()		
 		$(".point-adjust").click (e) =>
 			el = $(e.currentTarget)
 			form = el.closest("form")
 			input = form.find("input[type=text]")
 
 			# Change visible points
+			oldValue = input.val()
 			newValue = parseInt(input.val()) + parseInt(el.attr("data-value"))
 			newValue = if newValue < -1 then -1 else newValue
 			input.val(newValue)
 
 			# Push to server
-			$.post "/tutorial/assess", $(form).serialize(), ((data) => ), 'json'
+			req = $.post "/tutorial/assess", $(form).serialize(), ((data) => ), 'json'
+			req.success (e) =>
+				$("#alert").hide()
+			req.fail (e) =>
+				input.val(oldValue)
+				$("#alert .panel-body").text("There was a horrible problem connecting to the server. Either Henrik is restarting it which will take about 20 seconds or your internet connection has a problem. Try this: Wait a few seconds and refresh.")
+				$("#alert").show()
 
 		# Tooltips
 		$(".enable-tooltip").tooltip
@@ -38,7 +46,7 @@ window.tutorial = (group_id) =>
 			bn = $(b).find("td.lastname").text()
 			return if an < bn then -1 else 1
 		[a,b] = [[],[]]
-		for r in rows 
+		for r in rows
 			$(r).attr("title",$(r).attr("data-original-title"))
 			points = parseInt($(r).find("input[type=text]").val())
 			if points < 0 || $(r).attr("data-othergroup") == "1" then b.push(r) else a.push(r)

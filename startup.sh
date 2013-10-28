@@ -15,5 +15,6 @@ chown -R user: /usr/local/rvm/
 chmod 755 /src/sudoscript
 
 /usr/sbin/sshd &
+/usr/sbin/cron
 #sudo -i -u user -- bash /src/sudoscript
 script /tmp/script -c 'tmux new "cd /src ; sudo -i -u user -- bash /src/sudoscript"'

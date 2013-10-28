@@ -1,4 +1,7 @@
 .row
 	.col-md-6.col-md-offset-3
 		%h1(style="margin-top:50px") Request status link.
-		%p Neato! We've send the link.
+		- if @error.present?
+			.text-danger= @error
+		-else
+			%p Neato! We've send the link.
