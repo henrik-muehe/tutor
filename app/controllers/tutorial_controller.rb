@@ -103,7 +103,7 @@ class TutorialController < ApplicationController
 		 end
 
 		 # Find all students
-		 @students = @group.students + Assessment.where(:group => @group).map { |a| a.student }
+		 @students = @group.students + Assessment.where(:group => @group, :week => @week).map { |a| a.student }
 		 @students.uniq!
 		 @students.sort! { |a,b| a.lastname <=> b.lastname }
 	end
