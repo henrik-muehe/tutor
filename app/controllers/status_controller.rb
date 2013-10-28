@@ -7,4 +7,7 @@ class StatusController < ApplicationController
 
   def show
   end
+
+  def schedule
+  end
 end
