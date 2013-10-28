@@ -24,7 +24,7 @@
 							%a(href="mailto:#{g.user.email}")= g.user.name
 
 :coffeescript
-	groups = #{Group.all.includes([:user]).to_json(:only => [:name,:start,:room], :include => { :user => { :only => [ :firstname, :lastname, :email ]} })};
+	groups = #{Group.all.includes([:user]).to_json(:only => [:name,:start,:room,:updated_at], :include => { :user => { :only => [ :firstname, :lastname, :email ]} })};
 	$(document).ready =>
 		events=[]
 		for group in groups
@@ -34,4 +34,5 @@
 				start: new Date(group.start)
 				end: new Date((new Date(group.start)).getTime() + 90*60000);
 				allDay: false
+				color: if (new Date(group.updated_at) < new Date("2013-10-25 15:41:17 +0200")) then 'red' else 'green'
 		window.buildCalendar("cal", events, (=>))
