@@ -23,13 +23,13 @@ class TutorialController < ApplicationController
 		end
 		@students.uniq!
 
-		ap ActionMailer::Base.mail(
+		ActionMailer::Base.mail(
 			:from => current_user.email, 
 			:to => current_user.email, 
 			:bcc => @students.map { |s| s.email }, 
 			:subject => "[" + @group.course.name + "] " + params["subject"],
 			:body => params["body"]
-		)
+		).deliver
 
 		return render :status => 200, :json => {}
 	end
