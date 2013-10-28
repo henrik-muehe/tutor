@@ -5,9 +5,9 @@
 window.tutorial = (group_id) =>
 	wheel.init();
 
-	$("#tutorial_group_id").change => window.location = "/tutorial/?group_id="+$("#tutorial_group_id").val()
 	$("#tutorial_course_id").change => window.location = "/tutorial/?course_id="+$("#tutorial_course_id").val()
-	$("#tutorial_week_id").change => window.location = "/tutorial/?week_id="+$("#tutorial_week_id").val()
+	$("#tutorial_group_id").change => window.location = "/tutorial/?group_id="+$("#tutorial_group_id").val()+"&week_id="+$("#tutorial_week_id").val()
+	$("#tutorial_week_id").change => window.location = "/tutorial/?group_id="+$("#tutorial_group_id").val()+"&week_id="+$("#tutorial_week_id").val()
 
 	bind = =>
 		$(".point-adjust").click (e) =>
