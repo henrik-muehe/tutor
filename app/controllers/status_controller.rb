@@ -4,11 +4,11 @@ class StatusController < ApplicationController
 
 	def create
 		@student = Student.where(:matrnr => params["matrnr"]).first
-		if (Time.now - @student.updated_at) < 2*3600 then
-			return render :inline => "Sorry, you can only re-request every 2 hours."
-		end
-
-		if @student.present?
+		if not @student.present? then
+			@error = "The MatrNr you supplied is invalid."
+		elsif (Time.now - @student.updated_at) < 2*3600 then
+			@error = "Sorry, you can only re-request every 2 hours."
+		else
 			t = ""
 			while true
 				t = rand(36**16).to_s(36)
