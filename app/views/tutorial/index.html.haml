@@ -121,6 +121,9 @@
 						= @week.start.strftime("%d.%m.%Y")
 				- if @group.user != current_user
 					%span.text-danger , #{@group.user.name}'s group
+			.panel.panel-danger#alert
+				.panel-heading Something went wrong!
+				.panel-body
 		.col-md-6
 			%h2 
 			.btn-group.pull-right
