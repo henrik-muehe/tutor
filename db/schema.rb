@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131022145737) do
+ActiveRecord::Schema.define(version: 20131028093651) do
 
   create_table "assessments", force: true do |t|
     t.integer  "student_id"
@@ -64,7 +64,10 @@ ActiveRecord::Schema.define(version: 20131022145737) do
     t.integer  "matrnr"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "token"
   end
+
+  add_index "students", ["token"], name: "index_students_on_token", unique: true
 
   create_table "users", force: true do |t|
     t.boolean  "admin"

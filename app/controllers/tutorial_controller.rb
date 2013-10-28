@@ -52,13 +52,14 @@ class TutorialController < ApplicationController
 	end
 
 	def search
-		@group = Group.find(params["group_id"])
-		@results=[]
-		@group.course.groups.each do |g| 
-			g.students.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").each do |s|
-				@results << s
-			end
-		end
+		@results = Student.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").to_a
+		# @group = Group.find(params["group_id"])
+		# @results=[]
+		# @group.course.groups.each do |g| 
+		# 	g.students.where("(firstname||' '||lastname||' '||matrnr) like ?", "%#{params['term']}%").each do |s|
+		# 		@results << s
+		# 	end
+		# end
 	end
 
 	def assess
