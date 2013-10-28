@@ -69,6 +69,11 @@ window.tutorial = (group_id) =>
 		$(".move").removeClass("disabled")
 		return false;
 
+	$("#emails form").submit (e)=>
+		req = $.post "/tutorial/email", $("#emails form").serialize(), (result) =>
+			
+		return false
+
 	$("#move").submit (e)=>
 		# Visual
 		id=$("#search").select2("val")

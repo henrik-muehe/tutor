@@ -6,6 +6,7 @@ Tutor::Application.routes.draw do
   post "tutorial/move", to: "tutorial#move"
   post "tutorial/create_student", to: "tutorial#create_student"
   post "tutorial/settings", to: "tutorial#settings"
+  post "tutorial/email", to: "tutorial#email"
 
   get  "about", to: "about#index"
 
