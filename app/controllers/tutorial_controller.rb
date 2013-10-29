@@ -3,6 +3,37 @@ require 'awesome_print'
 class TutorialController < ApplicationController
 	before_filter :authenticate_user!
 
+	def email
+		@group = Group.find(params["group_id"])
+		@week = Week.find(params["week_id"])
+
+		# Find requested groups
+		groups = []		
+		if params["mode"] == "all"
+			groups = @group.user.groups.where(:course => @group.course)
+		else
+			groups = [@group]
+		end
+
+		# Find students
+		@students = []
+		groups.each do |g|
+			@students+= g.students.to_a
+			@students+= Assessment.where(:group => g, :week => @week).map { |a| a.student } if params["temp"]=="true"
+		end
+		@students.uniq!
+
+		ActionMailer::Base.mail(
+			:from => current_user.email, 
+			:to => current_user.email, 
+			:bcc => @students.map { |s| s.email }, 
+			:subject => "[" + @group.course.name + "] " + params["subject"],
+			:body => params["body"]
+		).deliver
+
+		return render :status => 200, :json => {}
+	end
+
 	def settings
 		@group = Group.find(params["group_id"])
 		m = params["min"].to_i

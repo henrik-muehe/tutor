@@ -19,6 +19,39 @@
 						%input.btn.btn-submit(type="submit" value="Save")
 						%button.btn.btn-default(data-dismiss="modal") Close
 
+	.modal.fade#emails(tabindex="-1")
+		.modal-dialog
+			.modal-content
+				= form_tag({:action => "email", :method => "post"},{}) do |f|					
+					%input{:type=>"hidden", :name=>"group_id", :value=>@group.id}
+					%input{:type=>"hidden", :name=>"week_id", :value=>@week.id}
+					.modal-header
+						%button.close(data-dismiss="modal" aria-hidden="true" type="button") &times;
+						%h4.modal-title Email Composer
+					.modal-body
+						.div.error.text-danger
+						.form-group
+							%label Subject
+							= text_field_tag :subject, "", :class => "form-control", :placeholder => "Subject"
+						.form-group
+							%label Body
+							= text_area_tag :body, "", :class => "form-control", :placeholder => "Body text", :rows => "8"
+						.form-group
+							.radio
+								%label
+									%input(type="radio" name="mode" value="one" checked=true)
+									Send to group #{@group.name}
+							.radio
+								%label
+									%input(type="radio" name="mode" value="all")
+									Send to all my groups
+						.form-group
+							%label
+								%input(type="checkbox" name="temp" checked=true value="true")
+								Include temporary students of week #{@week.start.strftime("%d.%m.%Y")}
+					.modal-footer
+						%input.btn.btn-submit(type="submit" value="Send email!")
+						%button.btn.btn-default(data-dismiss="modal") Close
 
 	.modal.fade#time(tabindex="-1")
 		.modal-dialog
@@ -110,7 +143,7 @@
 					%button.btn.btn-default(data-dismiss="modal") Close
 
 	.row
-		.col-md-6
+		.col-md-5
 			%h2 
 				Tutorial #{@group.name}, 
 				- if @week.start < Time.now and (Time.now - @week.start) < (3600*24*7) then
@@ -121,17 +154,13 @@
 						= @week.start.strftime("%d.%m.%Y")
 				- if @group.user != current_user
 					%span.text-danger , #{@group.user.name}'s group
-			.panel.panel-danger#alert
-				.panel-heading Something went wrong!
-				.panel-body
-		.col-md-6
+		.col-md-7
 			%h2 
 			.btn-group.pull-right
 				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#time" title="Switch to different course, group or week.")
 					%i.glyphicon.glyphicon-time 
 					Switch
-				- cls=(@group.updated_at < Time.parse("2013-10-25 15:41:17 +0200") ? "btn-danger" : "")
-				%button#btn-settings.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group." class=cls)
+				%button#btn-settings.btn.btn-default.enable-tooltip(data-toggle="modal" href="#settings" title="Change the settings of this tutorial group.")
 					%i.glyphicon.glyphicon-cog
 					Settings
 				%button#btn-manage.btn.btn-default.enable-tooltip(data-toggle="modal" href="#manage" title="Add or create a student.")
@@ -143,10 +172,18 @@
 				%button#random.btn.btn-default.enable-tooltip(title="Select random student.")
 					%i.glyphicon.glyphicon-random 
 					Random
+				%button.btn.btn-default.enable-tooltip(data-toggle="modal" href="#emails" title="Send an email to your groups.")
+					%i.glyphicon.glyphicon-inbox
+					Emails
 				%a#logout.btn.btn-default.enable-tooltip(href=destroy_user_session_path title="Logout")
 					%i.glyphicon.glyphicon-log-out
 					Logout
 
+	.row
+		.col-md-12
+			.panel.panel-danger#alert
+				.panel-heading Something went wrong!
+				.panel-body
 	.row
 		.col-md-12
 			#table
