@@ -79,7 +79,7 @@ window.tutorial = (group_id) =>
 
 	$("#emails form").submit (e)=>
 		req = $.post "/tutorial/email", $("#emails form").serialize(), (result) =>
-			
+		$("#emails").modal('hide')
 		return false
 
 	$("#move").submit (e)=>
