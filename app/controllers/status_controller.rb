@@ -3,7 +3,7 @@ class StatusController < ApplicationController
 	end
 
 	def create
-		@student = Student.where(:matrnr => params["matrnr"]).first
+		@student = Student.where(:matrnr => params["matrnr"].to_i).first
 		if not @student.present? then
 			@error = "The MatrNr you supplied is invalid."
 		elsif (Time.now - @student.updated_at) < 2*3600 then
