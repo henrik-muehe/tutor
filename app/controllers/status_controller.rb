@@ -1,4 +1,6 @@
 class StatusController < ApplicationController
+	protect_from_forgery :except => [:new, :create]
+
 	def new
 	end
 
