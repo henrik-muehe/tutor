@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @analysis.name
+%p
+  %b Query:
+  = @analysis.query
+%p
+  %b Admin:
+  = @analysis.admin
+
+= link_to 'Edit', edit_analysis_path(@analysis)
+\|
+= link_to 'Back', analyses_path

@@ -1,5 +1,7 @@
 Tutor::Application.routes.draw do
 
+  resources :analyses
+
   get  "tutorial", to: "tutorial#index"
   post "tutorial/assess", to: "tutorial#assess"
   get  "tutorial/search", to: "tutorial#search"

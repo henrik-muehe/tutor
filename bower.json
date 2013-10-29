@@ -17,6 +17,7 @@
   "dependencies": {
     "bootstrap": "~3.0.0",
     "select2": "~3.4.3",
-    "fullcalendar": "~1.6.4"
+    "fullcalendar": "~1.6.4",
+    "codemirror": "~3.19.0"
   }
 }

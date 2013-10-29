@@ -1,0 +1,25 @@
+= form_for @analysis do |f|
+  - if @analysis.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@analysis.errors.count, "error")} prohibited this analysis from being saved:"
+      %ul
+        - @analysis.errors.full_messages.each do |msg|
+          %li= msg
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, :class => "form-control"
+  .form-group
+    = f.label :query
+    = f.text_area :query, :class => "form-control", :rows => "10"
+  .form-group
+    = f.label :admin
+    = f.check_box :admin
+  .form-group
+    = f.submit 'Save', :class => "btn btn-submit"
+
+:coffeescript
+  CodeMirror.fromTextArea $("textarea")[0], {
+    mode: 'text/x-sql'
+    lineNumbers: true
+  }
