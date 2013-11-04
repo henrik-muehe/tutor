@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131029095149) do
+ActiveRecord::Schema.define(version: 20131104114958) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20131029095149) do
     t.boolean  "admin"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "view"
   end
 
   create_table "assessments", force: true do |t|

@@ -11,6 +11,7 @@ Tutor::Application.routes.draw do
   post "tutorial/email", to: "tutorial#email"
 
   get  "about", to: "about#index"
+  get  "analyses/:id/execute", to: "analyses#execute"
 
   get  "status", to: "status#new"
   post "status/create", to: "status#create"

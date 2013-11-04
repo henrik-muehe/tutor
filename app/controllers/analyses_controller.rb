@@ -19,6 +19,14 @@ class AnalysesController < ApplicationController
 	def show
 	end
 
+	def execute
+		a = Analysis.where(:id => params["id"]).first
+		a = Analysis.new if not a.present?
+		a.query=params["query"]
+		a.view=params["view"]
+		render :partial => "analysis", :locals => { :a => a }, :layout => false
+	end
+
 	# GET /analyses/new
 	def new
 		@analysis = Analysis.new
@@ -76,6 +84,6 @@ class AnalysesController < ApplicationController
 
 		# Never trust parameters from the scary internet, only allow the white list through.
 		def analysis_params
-			params.require(:analysis).permit(:name, :query, :admin)
+			params.require(:analysis).permit(:name, :query, :admin, :view)
 		end
 end

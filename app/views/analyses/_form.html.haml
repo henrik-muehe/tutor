@@ -1,25 +1,41 @@
-= form_for @analysis do |f|
-  - if @analysis.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@analysis.errors.count, "error")} prohibited this analysis from being saved:"
-      %ul
-        - @analysis.errors.full_messages.each do |msg|
-          %li= msg
+.row
+  .col-md-6
+    = form_for @analysis do |f|
+      - if @analysis.errors.any?
+        #error_explanation
+          %h2= "#{pluralize(@analysis.errors.count, "error")} prohibited this analysis from being saved:"
+          %ul
+            - @analysis.errors.full_messages.each do |msg|
+              %li= msg
 
-  .form-group
-    = f.label :name
-    = f.text_field :name, :class => "form-control"
-  .form-group
-    = f.label :query
-    = f.text_area :query, :class => "form-control", :rows => "10"
-  .form-group
-    = f.label :admin
-    = f.check_box :admin
-  .form-group
-    = f.submit 'Save', :class => "btn btn-submit"
+      .form-group
+        = f.label :name
+        = f.text_field :name, :class => "form-control"
+      .form-group
+        = f.label :query
+        = f.text_area :query, :class => "form-control", :rows => "10"
+      .form-group
+        = f.label :view
+        = f.text_area :view, :class => "form-control", :rows => "10"
+      .form-group
+        = f.label :admin
+        = f.check_box :admin
+      .form-group
+        %button#btn-preview.btn.btn-submit Preview
+        = f.submit 'Save', :class => "btn btn-submit"
+
+  .col-md-6(style="border-left: 1px solid black;")
+    #preview
+      = render "analysis", :a => @analysis
 
 :coffeescript
-  CodeMirror.fromTextArea $("textarea")[0], {
+  query=CodeMirror.fromTextArea $("#analysis_query")[0],
     mode: 'text/x-sql'
     lineNumbers: true
-  }
+  view=CodeMirror.fromTextArea $("#analysis_view")[0],
+    mode: 'text/x-haml'
+    lineNumbers: true
+  $("#btn-preview").click =>
+    $.get "/analyses/#{@analysis.id.nil? ? 0 : @analysis.id}/execute", {query: query.getValue(), view: view.getValue()}, (data) =>
+      $("#preview").html(data)
+    return false

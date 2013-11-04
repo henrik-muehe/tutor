@@ -1,14 +1,8 @@
+%h1 Analysis: #{@analysis.name}
+
 %p#notice= notice
 
-%p
-  %b Name:
-  = @analysis.name
-%p
-  %b Query:
-  = @analysis.query
-%p
-  %b Admin:
-  = @analysis.admin
+= render "analysis", :a => @analysis
 
 = link_to 'Edit', edit_analysis_path(@analysis)
 \|

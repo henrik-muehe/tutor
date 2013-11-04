@@ -28,22 +28,5 @@
 %h1 Analyses results
 
 - @analyses.each do |a|
-  %h3= a.name
-  %table.table.table-condensed.table-striped
-    - begin
-      - r = ActiveRecord::Base.connection().execute(a.query)
-      - if r.length == 0
-        Empty result
-      -else
-        - keys = r[0].keys.select { |k| k.is_a? String }
-        %thead
-          %tr
-            - keys.each do |k|
-              %th= k
-        %tbody
-          - r.each do |row|
-            %tr
-              - keys.each do |k|
-                %td= row[k]
-    - rescue
-      An exception occured during execution.
+  %h2= a.name
+  = render "analysis", :a => a

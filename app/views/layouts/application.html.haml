@@ -27,9 +27,9 @@
 								%a.navbar-brand(href="#") Tutor
 							%div.navbar-collapse.collapse
 								%ul.nav.navbar-nav
-									%li.active
-										%a(href="/tutorial/") Tutorial
 									- if user_signed_in? and current_user.admin
+										%li
+											%a(href="/analyses/") Analyses
 										%li
 											%a(href="/load/") Load
 										%li
