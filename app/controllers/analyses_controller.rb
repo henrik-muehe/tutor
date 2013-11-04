@@ -13,7 +13,8 @@ class AnalysesController < ApplicationController
 	# GET /analyses
 	# GET /analyses.json
 	def index
-		@analyses = Analysis.where(:admin => !!current_user.admin)
+		@analyses = Analysis.all
+		@analyses = @analyses.where(:admin => false) if current_user.nil? or !current_user.admin
 	end
 
 	# GET /analyses/1
