@@ -4,25 +4,29 @@
   %thead
     %tr
       %th Name
-      %th Admin
-      %th
-      %th
-      %th
+      - if current_user.admin
+        %th Admin
+        %th
+        %th
+        %th
 
   %tbody
     - @analyses.each do |analysis|
       %tr
         %td= analysis.name
-        %td= analysis.admin
-        %td= link_to 'Show', analysis
-        %td= link_to 'Edit', edit_analysis_path(analysis)
-        %td= button_to 'Destroy', analysis, :method => :delete
+        - if current_user.admin
+          %td= analysis.admin
+          %td= link_to 'Show', analysis
+          %td= link_to 'Edit', edit_analysis_path(analysis)
+          %td= button_to 'Destroy', analysis, :method => :delete
 
 %br
 
-= link_to 'New Analysis', new_analysis_path
-%br
-%br
+- if current_user.admin
+
+  = link_to 'New Analysis', new_analysis_path
+  %br
+  %br
 
 
 %h1 Analyses results

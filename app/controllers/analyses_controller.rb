@@ -1,6 +1,6 @@
 class AnalysesController < ApplicationController
 	before_filter :authenticate_user!
-	before_filter :admincheck, except: [:show]
+	before_filter :admincheck, except: [:show, :index]
 	before_action :set_analysis, only: [:show, :edit, :update, :destroy]
 
 	def admincheck
@@ -13,7 +13,7 @@ class AnalysesController < ApplicationController
 	# GET /analyses
 	# GET /analyses.json
 	def index
-		@analyses = Analysis.all
+		@analyses = Analysis.where(:admin => !!current_user.admin)
 	end
 
 	# GET /analyses/1
