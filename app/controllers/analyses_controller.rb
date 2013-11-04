@@ -1,12 +1,14 @@
 class AnalysesController < ApplicationController
 	before_filter :authenticate_user!
-	before_filter do 
+	before_filter :admincheck, except: [:show]
+	before_action :set_analysis, only: [:show, :edit, :update, :destroy]
+
+	def admincheck
 		unless current_user && current_user.admin
 			flash[:notice]="No access." 
 			redirect_to "/tutorial"
 		end
 	end
-	before_action :set_analysis, only: [:show, :edit, :update, :destroy]
 
 	# GET /analyses
 	# GET /analyses.json
@@ -17,6 +19,7 @@ class AnalysesController < ApplicationController
 	# GET /analyses/1
 	# GET /analyses/1.json
 	def show
+		admincheck() if @analysis.admin
 	end
 
 	def execute
