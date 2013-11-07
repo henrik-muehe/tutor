@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131104114958) do
+ActiveRecord::Schema.define(version: 20131107151517) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -79,7 +79,6 @@ ActiveRecord::Schema.define(version: 20131104114958) do
   add_index "students", ["token"], name: "index_students_on_token", unique: true
 
   create_table "users", force: true do |t|
-    t.boolean  "admin"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "email",                  default: "", null: false
@@ -94,6 +93,8 @@ ActiveRecord::Schema.define(version: 20131104114958) do
     t.string   "last_sign_in_ip"
     t.string   "firstname"
     t.string   "lastname"
+    t.string   "magictoken"
+    t.string   "role"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

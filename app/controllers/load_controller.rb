@@ -2,12 +2,7 @@ require 'csv'
 
 class LoadController < ApplicationController
   before_filter :authenticate_user!
-  before_filter do 
-    unless current_user && current_user.admin
-      flash[:notice]="No access." 
-      redirect_to "/tutorial"
-    end
-  end
+  before_filter :admincheck
 
   def index
   end

@@ -7,14 +7,14 @@
 		= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true, :debug => true
 		= javascript_include_tag "application", "data-turbolinks-track" => true, :debug => true
 		= csrf_meta_tags
-		- if current_user && current_user.admin
+		- if current_user && current_user.role == "admin"
 			:css
 				body { margin-top: 10px; }
 		:css
 			.container { max-width: 9999px; }
 
 	%body
-		- if current_user && current_user.admin
+		- if current_user && current_user.role == "admin"
 			%div.navbar-wrapper
 				%div.container
 					%div.navbar.navbar-inverse.navbar-static-top
@@ -27,7 +27,7 @@
 								%a.navbar-brand(href="#") Tutor
 							%div.navbar-collapse.collapse
 								%ul.nav.navbar-nav
-									- if user_signed_in? and current_user.admin
+									- if user_signed_in? and current_user.role == "admin"
 										%li
 											%a(href="/analyses/") Analyses
 										%li
@@ -59,7 +59,7 @@
 										.pull-right(style="margin-left: 10px")
 											= button_to 'Logout', destroy_user_session_path, { :method => :get, :class => "btn btn-xs btn-default navbar-btn"}
 										.pull-right.navbar-btn
-											- if current_user.admin
+											- if current_user.role == "admin"
 												= switch_user_select 
 									
 
@@ -74,5 +74,5 @@
 			= yield
 
 
-			- if current_user && !current_user.admin and session["original_user"] && session["original_user"].admin
+			- if current_user && current_user.role!="admin" and session["original_user"] && session["original_user"].role=="admin"
 				= switch_user_select 

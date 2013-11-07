@@ -1,11 +1,6 @@
 class WeeksController < ApplicationController
   before_filter :authenticate_user!
-  before_filter do 
-    unless current_user && current_user.admin
-      flash[:notice]="No access." 
-      redirect_to "/tutorial"
-    end
-  end
+  before_filter :admincheck
   before_action :set_week, only: [:show, :edit, :update, :destroy]
 
   # GET /weeks

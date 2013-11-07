@@ -23,6 +23,7 @@ Tutor::Application.routes.draw do
   post "load/tumonline", to: "load#tumonline"
   post "load/tutoren", to: "load#tutoren"
 
+  get "users/:id/magiclogin/:magictoken", to: "users#magiclogin"
   get "users/:id/reset", to: "users#reset"
 
   devise_for :users

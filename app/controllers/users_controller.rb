@@ -1,18 +1,22 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter do 
-    unless current_user && current_user.admin
-      puts "nono"
-      flash[:notice]="No access." 
-      redirect_to "/tutorial"
-    end
-  end
+  before_filter :authenticate_user!, except: [:magiclogin]
+  before_filter :admincheck
   before_action :set_user, only: [:show, :edit, :update, :destroy, :reset]
 
   def reset
     flash[:notice]="Reset email send to user #{@user.name}."
     @user.send_reset_password_instructions()
     redirect_to "/users/"
+  end
+
+  def magiclogin
+    u = User.where(:id => params[:id], :magictoken => params[:magictoken]).first
+    if u.present? then
+      sign_in(:user, u)
+      redirect_to '/'
+    else
+      return render :inline => "sorry but you did not provide valid magic login credentials"
+    end
   end
 
   def import
@@ -93,6 +97,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:email,:admin,:firstname,:lastname)
+      params.require(:user).permit(:email,:firstname,:lastname,:magictoken,:password,:password_confirmation,:role)
     end
 end

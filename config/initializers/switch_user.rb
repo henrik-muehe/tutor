@@ -25,7 +25,7 @@ SwitchUser.setup do |config|
   # else the request will be refused and returns "Permission Denied"
   # if you switch from "admin" to user, the current_user param is "admin"
   config.controller_guard = lambda do |current_user, request, original_user| 
-    current_user && current_user.admin || original_user && original_user.admin
+    current_user && current_user.role == "admin" || original_user && original_user.role == "admin"
   end
 
   # view_guard is a block,

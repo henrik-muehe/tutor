@@ -3,18 +3,12 @@ class AnalysesController < ApplicationController
 	before_filter :admincheck, except: [:show, :index]
 	before_action :set_analysis, only: [:show, :edit, :update, :destroy]
 
-	def admincheck
-		unless current_user && current_user.admin
-			flash[:notice]="No access." 
-			redirect_to "/tutorial"
-		end
-	end
-
 	# GET /analyses
 	# GET /analyses.json
 	def index
 		@analyses = Analysis.all
-		@analyses = @analyses.where(:admin => false) if current_user.nil? or !current_user.admin
+		p current_user
+		@analyses = @analyses.where(:admin => false) if current_user.nil? or (current_user.role != "admin" and current_user.role != "boss")
 	end
 
 	# GET /analyses/1

@@ -15,8 +15,19 @@
   .form-group
     = f.label :lastname
     = f.text_field :lastname, :class => "form-control"
+  - if not @user.updated_at
+    .form-group
+      = f.label :password
+      = f.text_field :password, :class => "form-control"
+    .form-group
+      = f.label :password_confirmation
+      = f.text_field :password_confirmation, :class => "form-control"
   .form-group
-    = f.label :admin
-    = f.text_field :admin, :class => "form-control"
+    = f.label :role
+    = f.text_field :role, :class => "form-control"
+  .form-group
+    = f.label :magictoken
+    %a(onclick="$('#user_magictoken').val(Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2));") (generate random token)
+    = f.text_field :magictoken, :class => "form-control"
   .actions
     = f.submit 'Save'

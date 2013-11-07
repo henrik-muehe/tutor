@@ -4,7 +4,7 @@
   %thead
     %tr
       %th Name
-      - if current_user.admin
+      - if current_user.role == "admin"
         %th Admin
         %th
         %th
@@ -14,7 +14,7 @@
     - @analyses.each do |analysis|
       %tr
         %td= analysis.name
-        - if current_user.admin
+        - if current_user.role == "admin"
           %td= analysis.admin
           %td= link_to 'Show', analysis
           %td= link_to 'Edit', edit_analysis_path(analysis)
@@ -22,7 +22,7 @@
 
 %br
 
-- if current_user.admin
+- if current_user.role == "admin"
 
   = link_to 'New Analysis', new_analysis_path
   %br
