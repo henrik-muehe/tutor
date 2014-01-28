@@ -31,7 +31,6 @@
 			%a(href="mailto:#{s.email}")=s.firstname
 		%td.matrnr= "****#{"%03d" % (s.matrnr%1000)}"
 - rescue Exception => e
-	- p a
-	- p e
+	= e.message
 	%tr
 		%td(colspan="6") There's been a horrible bug; please oh please email Henrik quickly.
