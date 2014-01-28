@@ -98,7 +98,6 @@ class TutorialController < ApplicationController
 			:week_id => params["assessment"]["week_id"],
 			:student_id => params["assessment"]["student_id"]
 		)
-		p @assessments if @assessments.length > 1
 		@assessment = @assessments.first
 		if not @assessment
 			@assessment = Assessment.create(assess_params)

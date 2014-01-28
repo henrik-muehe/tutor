@@ -4,7 +4,7 @@
 		%td.count
 		%td
 			= form_for a, :method=>:post,:html => { :class => "form-inline", :onsubmit => "return false;" } do |f|
-				= f.hidden_field :user_id
+				%input(id="assessment_user_id" name="assessment[user_id]" type="hidden" value=@group.user)
 				= f.hidden_field :week_id
 				= f.hidden_field :student_id
 				= f.hidden_field :group_id
