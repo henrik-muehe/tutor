@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
 	def admincheck
 		unless current_user && current_user.role == "admin"
-			flash[:notice]="No access." 
-			redirect_to "/tutorial"
+			return redirect_to "/analyses" if current_user.role == "analyst"
+			return redirect_to "/tutorial"
 		end
 	end
 

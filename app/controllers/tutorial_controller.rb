@@ -2,6 +2,12 @@ require 'awesome_print'
 
 class TutorialController < ApplicationController
 	before_filter :authenticate_user!
+	before_filter :redirector
+
+	def redirector
+		return redirect_to "/analyses" if current_user.role == "analyst"
+	end
+
 
 	def email
 		@group = Group.find(params["group_id"])
