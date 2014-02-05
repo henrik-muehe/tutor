@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:magiclogin]
-  before_filter :admincheck
+  before_filter :admincheck, except: [:magiclogin]
   before_action :set_user, only: [:show, :edit, :update, :destroy, :reset]
 
   def reset
