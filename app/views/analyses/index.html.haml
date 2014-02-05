@@ -34,7 +34,8 @@
 - @analyses.each do |a|
   %h2= a.name
   %a.togglelink Show SQL Source
-  %div.toggle= a.query
+  %div.toggle
+    %pre= a.query
   = render "analysis", :a => a
 
 :coffeescript
@@ -43,5 +44,5 @@
     $('a.togglelink').click ->
       console.log "clicked"
       $('.toggle').hide()
-      $(this).parent().next('.toggle').toggle('slow')
+      $(this).next('.toggle').toggle('slow')
       return false;
