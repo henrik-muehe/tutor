@@ -1,0 +1,29 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th Email
+      %th Firstname
+      %th Lastname
+      %th Last
+      %th Current
+      %th Count
+      %th Role
+      %th
+      %th
+      %th
+      %th
+
+  %tbody
+    - users.each do |user|
+      %tr
+        %td= user.email
+        %td= user.firstname
+        %td= user.lastname
+        %td= user.last_sign_in_at
+        %td= user.current_sign_in_at
+        %td= user.sign_in_count
+        %td= user.role
+        %td= link_to 'Toggle Association', { controller: "users", action: "associate", id: user.id }
+        %td= link_to 'Edit', edit_user_path(user)
+        %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
+        %td= link_to 'Reset PW', { controller: "users", action: "reset", id: user.id }

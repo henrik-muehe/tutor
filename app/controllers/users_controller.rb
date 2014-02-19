@@ -1,11 +1,23 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!, except: [:magiclogin]
   before_filter :admincheck, except: [:magiclogin]
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :reset]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :reset, :associate]
 
   def reset
     flash[:notice]="Reset email send to user #{@user.name}."
     @user.send_reset_password_instructions()
+    redirect_to "/users/"
+  end
+
+  def associate
+    #flash[:notice]="Associated user #{@user.email} with course #{session[:course].name}."
+
+    if session[:course].users.where(:id => @user.id).present?
+      session[:course].users.delete(@user.id)
+    else
+      session[:course].users << @user
+    end
+
     redirect_to "/users/"
   end
 
@@ -32,7 +44,8 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @course_users = session[:course].users
+    @users = User.where(["id not in (?)", @course_users.map{|u| u.id}+[-1]]).order(["role DESC",:lastname,:firstname])
   end
 
   # GET /users/1

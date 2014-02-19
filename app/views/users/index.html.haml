@@ -1,35 +1,13 @@
-%h1 Listing users
+%h1 
+  Users associated with course 
+  = session[:course].name
 
-%table.table.table-striped
-  %thead
-    %tr
-      %th Email
-      %th Firstname
-      %th Lastname
-      %th Last
-      %th Current
-      %th Count
-      %th Role
-      %th
-      %th
-      %th
-      %th
+= render :partial => 'users/index_table', :locals => { :users => @course_users }
+%br
 
-  %tbody
-    - @users.each do |user|
-      %tr
-        %td= user.email
-        %td= user.firstname
-        %td= user.lastname
-        %td= user.last_sign_in_at
-        %td= user.current_sign_in_at
-        %td= user.sign_in_count
-        %td= user.role
-        %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, :method => :delete, :data => { :confirm => 'Are you sure?' }
-        %td= link_to 'Reset', { controller: "users", action: "reset", id: user.id }
+%h1 All other users
 
+= render :partial => 'users/index_table', :locals => { :users => @users }
 %br
 
 = link_to 'New User', new_user_path

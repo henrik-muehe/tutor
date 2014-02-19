@@ -25,6 +25,7 @@ Tutor::Application.routes.draw do
 
   get "users/:id/magiclogin/:magictoken", to: "users#magiclogin"
   get "users/:id/reset", to: "users#reset"
+  get "users/:id/associate", to: "users#associate"
 
   devise_for :users
 
