@@ -6,12 +6,7 @@ class WeeksController < ApplicationController
   # GET /weeks
   # GET /weeks.json
   def index
-    @weeks = Week.all
-  end
-
-  # GET /weeks/1
-  # GET /weeks/1.json
-  def show
+    @weeks = @course.weeks
   end
 
   # GET /weeks/new
@@ -26,30 +21,21 @@ class WeeksController < ApplicationController
   # POST /weeks
   # POST /weeks.jso 
  def create
-    @week = Week.new(week_params)
-
-    respond_to do |format|
-      if @week.save
-        format.html { redirect_to @week, notice: 'Week was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @week }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @week.errors, status: :unprocessable_entity }
-      end
+    @week = Week.new(week_params.merge(course_id: @course.id))
+    if @week.save
+      redirect_to '/weeks'
+    else
+      render action: 'new'
     end
   end
 
   # PATCH/PUT /weeks/1
   # PATCH/PUT /weeks/1.json
   def update
-    respond_to do |format|
-      if @week.update(week_params)
-        format.html { redirect_to @week, notice: 'Week was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @week.errors, status: :unprocessable_entity }
-      end
+    if @week.update(week_params)
+      redirect_to '/weeks'
+    else
+      render action: 'edit'
     end
   end
 
@@ -57,10 +43,7 @@ class WeeksController < ApplicationController
   # DELETE /weeks/1.json
   def destroy
     @week.destroy
-    respond_to do |format|
-      format.html { redirect_to weeks_url }
-      format.json { head :no_content }
-    end
+    redirect_to '/weeks'
   end
 
   private

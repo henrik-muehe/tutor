@@ -13,7 +13,7 @@ class LoadController < ApplicationController
 
   def tumonline
     ActiveRecord::Base.transaction do
-      c = session[:course]
+      c = @course
 
       CSV.foreach(params["load"]["file"].tempfile.path, { :encoding => 'bom|utf-8', :headers => true }) do |row|
         s = Student.create(
@@ -36,7 +36,7 @@ class LoadController < ApplicationController
 
   def tutoren
     ActiveRecord::Base.transaction do
-      c = session[:course]
+      c = @course
 
       CSV.foreach(params["load"]["file"].tempfile.path, { :encoding => 'bom|utf-8', :headers => true, :col_sep => ';' }) do |row|
         next if row["name"].nil?

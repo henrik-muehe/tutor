@@ -6,7 +6,7 @@
 		= form_for :load, :url => { :action => :tumonline }, :method => "post" do |f|
 			.form-group
 				%label Course:
-				= session[:course].name
+				= @course.name
 			.form-group
 				%label CSV file from TUMonline:
 				= f.file_field :file
@@ -18,7 +18,7 @@
 		= form_for :load, :url => { :action => :tutoren }, :method => "post" do |f|
 			.form-group
 				%label Course:
-				= session[:course].name
+				= @course.name
 			.form-group
 				%label CSV file from Assigner / other source:
 				= f.file_field :file

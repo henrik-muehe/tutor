@@ -1,4 +1,4 @@
-%h1 Listing weeks
+%h1 Listing weeks for course #{@course.name}
 
 %table.table.table-striped
   %thead
@@ -7,14 +7,12 @@
       %th Start
       %th
       %th
-      %th
 
   %tbody
     - @weeks.each do |week|
       %tr
         %td= week.course ? week.course.name : "unassigned"
-        %td= week.start
-        %td= link_to 'Show', week
+        %td= week.start.strftime("%a, %d.%m.%Y")
         %td= link_to 'Edit', edit_week_path(week)
         %td= link_to 'Destroy', week, :method => :delete, :data => { :confirm => 'Are you sure?' }
 

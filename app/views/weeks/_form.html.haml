@@ -7,10 +7,10 @@
           %li= msg
 
   .form-group
-    = f.label :start
-    = f.datetime_select :start
-  .form-group
     = f.label :course
-    = f.collection_select :course_id, Course.all, :id, :name
+    = @course.name
+  .form-group.form-inline
+    = f.label :start
+    = f.date_select :start, {}, { :class => "form-control" }
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :class => "btn btn-primary"

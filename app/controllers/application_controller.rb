@@ -7,8 +7,9 @@ class ApplicationController < ActionController::Base
 	end
 
 	def coursecheck
-		session[:course] = Course.find(params[:course_id]) if params.has_key? :course_id
-		session[:course] ||= Course.order("created_at DESC").first
+		session[:course_id] = params[:course_id] if params.has_key? :course_id
+		session[:course_id] ||= Course.order("created_at DESC").first.id
+		@course = Course.find(session[:course_id])
 	end
 
 	before_filter :coursecheck

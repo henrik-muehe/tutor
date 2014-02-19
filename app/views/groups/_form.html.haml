@@ -6,17 +6,20 @@
         - @group.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
+  .form-group
     = f.label :name
-    = f.text_field :name
-  .field
-    = f.label :start
-    = f.datetime_select :start
-  .field
-    = f.label :user_id
-    = f.number_field :user_id
-  .field
+    = f.text_field :name, :class => "form-control"
+  .form-group
+    = f.label :start, "Timeslot"
+    %div
+      = select :group, :day, Group::DAYS
+      @
+      #{select :group, :hour, Group::HOURS} : #{select :group, :minute, Group::MINUTES}
+  .form-group
+    = f.label :user_id, "Tutor for Group"
+    = f.collection_select :user_id, User.all, :id, :name, {include_blank: "Unassigned"}, { :class => "form-control" } 
+  .form-group
     = f.label :course_id
-    = f.number_field :course_id
+    = f.collection_select :course_id, Course.all, :id, :name, { :selected => lambda { |c| c.id == @course.id }}, { :class => "form-control" }
   .actions
     = f.submit 'Save'

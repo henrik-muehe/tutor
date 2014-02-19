@@ -1,6 +1,6 @@
 %h1 
   Users associated with course 
-  = session[:course].name
+  = @course.name
 
 = render :partial => 'users/index_table', :locals => { :users => @course_users }
 %br

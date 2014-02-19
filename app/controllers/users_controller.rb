@@ -10,12 +10,12 @@ class UsersController < ApplicationController
   end
 
   def associate
-    #flash[:notice]="Associated user #{@user.email} with course #{session[:course].name}."
+    #flash[:notice]="Associated user #{@user.email} with course #{@course.name}."
 
-    if session[:course].users.where(:id => @user.id).present?
-      session[:course].users.delete(@user.id)
+    if @course.users.where(:id => @user.id).present?
+      @course.users.delete(@user.id)
     else
-      session[:course].users << @user
+      @course.users << @user
     end
 
     redirect_to "/users/"
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @course_users = session[:course].users
+    @course_users = @course.users
     @users = User.where(["id not in (?)", @course_users.map{|u| u.id}+[-1]]).order(["role DESC",:lastname,:firstname])
   end
 

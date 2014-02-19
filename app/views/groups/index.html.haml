@@ -1,4 +1,4 @@
-%h1 Listing groups
+%h1 Listing groups for #{@course.name}
 
 %table.table.table-striped
   %thead
@@ -18,7 +18,7 @@
         %td= group.name
         %td= group.students.size
         %td= group.start ? group.start.strftime("%a %H:%M") : "unassigned"
-        %td= group.user ? group.user.email :  "unassgined"
+        %td= group.user ? group.user.email :  "unassigned"
         %td= group.course.name
         %td= link_to 'Show', group
         %td= link_to 'Edit', edit_group_path(group)

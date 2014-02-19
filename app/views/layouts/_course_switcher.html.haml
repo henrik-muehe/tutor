@@ -1,4 +1,4 @@
-= collection_select session[:course], :id, Course.all.order("created_at DESC"), :id, :name, { :selected => lambda{|c| c.id == session[:course].id } }, { :id => "course_id", :class=>"form-control" }
+= collection_select @course, :id, Course.all.order("created_at DESC"), :id, :name, { :selected => lambda{|c| c.id == @course.id } }, { :id => "course_id", :class=>"form-control" }
 
 :coffeescript
 	insertParam = (key, value) ->
