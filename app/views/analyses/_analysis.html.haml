@@ -5,7 +5,7 @@
   - else
     - keys = r[0].keys.select { |k| k.is_a? String }
     - if a.view.present?
-      = Haml::Engine.new(a.view).render(Object.new,:a => a, :r => r, :keys => keys)
+      = Haml::Engine.new(a.view).render(Object.new,:a => a, :r => r, :keys => keys, :course_id => session[:course].id)
     - else
       %table.table.table-condensed.table-striped
         %thead
