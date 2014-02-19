@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require select2
 //= require fullcalendar
+//= require bootstrap-switch
 //= require codemirror
 //= require wheel
 //= require_tree .

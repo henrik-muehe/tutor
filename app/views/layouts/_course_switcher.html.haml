@@ -1,0 +1,26 @@
+= collection_select session[:course], :id, Course.all.order("created_at DESC"), :id, :name, { :selected => lambda{|c| c.id == session[:course].id } }, { :id => "course_id", :class=>"form-control" }
+
+:coffeescript
+	insertParam = (key, value) ->
+		key = encodeURI(key)
+		value = encodeURI(value)
+		kvp = if document.location.search.length > 0 then document.location.search.substr(1).split('&') else []
+
+		i=kvp.length
+		x=0
+		while(i--)
+			x = kvp[i].split('=')
+			if (x[0]==key)
+				x[1] = value;
+				kvp[i] = x.join('=');
+				break;
+
+		if(i<0) 
+			kvp[kvp.length] = [key,value].join('=');
+
+		document.location.search = kvp.join('&'); 
+
+	$(document).ready ->
+		$("#course_id").change ->
+			insertParam("course_id", $("#course_id").val())
+

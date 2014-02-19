@@ -6,6 +6,13 @@ class ApplicationController < ActionController::Base
 		end
 	end
 
+	def coursecheck
+		session[:course] = Course.find(params[:course_id]) if params.has_key? :course_id
+		session[:course] ||= Course.order("created_at DESC").first
+	end
+
+	before_filter :coursecheck
+
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

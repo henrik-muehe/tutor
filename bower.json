@@ -18,6 +18,7 @@
     "bootstrap": "~3.0.0",
     "select2": "~3.4.3",
     "fullcalendar": "~1.6.4",
-    "codemirror": "~3.19.0"
+    "codemirror": "~3.19.0",
+    "bootstrap-switch": "~2.0.1"
   }
 }
