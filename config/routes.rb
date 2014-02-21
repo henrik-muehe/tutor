@@ -1,5 +1,9 @@
 Tutor::Application.routes.draw do
 
+  resources :exams
+
+  resources :rooms
+
   resources :analyses
 
   get  "tutorial", to: "tutorial#index"
@@ -26,6 +30,14 @@ Tutor::Application.routes.draw do
   get "users/:id/magiclogin/:magictoken", to: "users#magiclogin"
   get "users/:id/reset", to: "users#reset"
   get "users/:id/associate", to: "users#associate"
+
+  post "exams/:id/assign_seats", to: "exams#assign_seats"
+  post "exams/:id/reset_seats", to: "exams#reset_seats"
+  get "exams/:id/print_roomdoor", to: "exams#print_roomdoor"
+  get "exams/:id/print_signatures", to: "exams#print_signatures"
+  get "exams/:id/export_seats", to: "exams#export_seats"
+  get "exams/:id/export_grades", to: "exams#export_grades"
+  get "exams/:id/grade", to: "exams#grade"
 
   devise_for :users
 

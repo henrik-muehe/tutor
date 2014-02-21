@@ -1,7 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
-  admin: 
+  role: 'admin'
+  email: 'admin@example.com'
 
 two:
-  admin: 
+  role: ''
+  email: 'test@example.com'

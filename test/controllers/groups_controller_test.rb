@@ -2,6 +2,7 @@ require 'test_helper'
 
 class GroupsControllerTest < ActionController::TestCase
   setup do
+    sign_in :user, User.where(:email => 'admin@example.com').first
     @group = groups(:one)
   end
 
@@ -21,7 +22,7 @@ class GroupsControllerTest < ActionController::TestCase
       post :create, group: { course_id: @group.course_id, name: @group.name, start: @group.start, user_id: @group.user_id }
     end
 
-    assert_redirected_to group_path(assigns(:group))
+    assert_redirected_to groups_path
   end
 
   test "should show group" do
@@ -36,7 +37,7 @@ class GroupsControllerTest < ActionController::TestCase
 
   test "should update group" do
     patch :update, id: @group, group: { course_id: @group.course_id, name: @group.name, start: @group.start, user_id: @group.user_id }
-    assert_redirected_to group_path(assigns(:group))
+    assert_redirected_to groups_path
   end
 
   test "should destroy group" do

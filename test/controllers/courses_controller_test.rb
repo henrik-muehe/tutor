@@ -2,6 +2,7 @@ require 'test_helper'
 
 class CoursesControllerTest < ActionController::TestCase
   setup do
+    sign_in :user, User.where(:email => 'admin@example.com').first
     @course = courses(:one)
   end
 

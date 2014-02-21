@@ -1,0 +1,32 @@
+= form_for @exam do |f|
+  - if @exam.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@exam.errors.count, "error")} prohibited this exam from being saved:"
+      %ul
+        - @exam.errors.full_messages.each do |msg|
+          %li= msg
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, :class => "form-control"
+  .form-group
+    = f.label :original_import, "TUMonline CSV for Exam"
+    = f.text_area :original_import, :class => "form-control", :rows => 15
+  .form-group
+    = f.label :exam_tasks
+    #exam_tasks.form-horizontal(style="padding-left:10px")
+      = f.fields_for :exam_tasks do |t|
+        = render 'exam_task_fields', :f => t
+      .links
+        = link_to_add_association 'add task', f, :exam_tasks, :class => "btn btn-success"
+  .form-group
+    = f.label :rooms
+    = hidden_field_tag 'exam[room_ids][]', nil
+    %div(style="padding-left: 10px")
+      - Room.all.each do |r|
+        .checkbox
+          %label
+            = check_box_tag 'exam[room_ids][]', r.id, @exam.room_ids.include?(r.id)
+            = r.name
+  .actions
+    = f.submit 'Save'

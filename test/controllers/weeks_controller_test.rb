@@ -2,6 +2,7 @@ require 'test_helper'
 
 class WeeksControllerTest < ActionController::TestCase
   setup do
+    sign_in :user, User.where(:email => 'admin@example.com').first
     @week = weeks(:one)
   end
 
@@ -21,12 +22,7 @@ class WeeksControllerTest < ActionController::TestCase
       post :create, week: { start: @week.start }
     end
 
-    assert_redirected_to week_path(assigns(:week))
-  end
-
-  test "should show week" do
-    get :show, id: @week
-    assert_response :success
+    assert_redirected_to weeks_path
   end
 
   test "should get edit" do
@@ -36,7 +32,7 @@ class WeeksControllerTest < ActionController::TestCase
 
   test "should update week" do
     patch :update, id: @week, week: { start: @week.start }
-    assert_redirected_to week_path(assigns(:week))
+    assert_redirected_to weeks_path
   end
 
   test "should destroy week" do

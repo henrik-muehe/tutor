@@ -18,5 +18,6 @@
 //= require fullcalendar
 //= require bootstrap-switch
 //= require codemirror
+//= require cocoon
 //= require wheel
 //= require_tree .

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  start: 2014-02-19 17:02:36
+  original_import: MyText
+
+two:
+  name: MyString
+  start: 2014-02-19 17:02:36
+  original_import: MyText

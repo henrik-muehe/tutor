@@ -23,20 +23,42 @@
 				%div.navbar-collapse.collapse
 					%ul.nav.navbar-nav
 						- if user_signed_in? and current_user.role == "admin"
-							%li
-								%a(href="/analyses/") Analyses
-							%li
-								%a(href="/load/") Load
-							%li
-								%a(href="/users/") Users
-							%li
-								%a(href="/courses/") Courses
-							%li
-								%a(href="/weeks/") Weeks
-							%li
-								%a(href="/groups/") Groups
-							%li
-								%a(href="/students/") Students
+							%li.dropdown
+								%a(href="#" data-toggle="dropdown") 
+									Tutorials
+									%b.caret
+
+									%ul.dropdown-menu
+										%li
+											%a(href="/analyses/") Analyses
+										%li
+											%a(href="/load/") Load
+										%li
+											%a(href="/users/") Tutors
+										%li
+											%a(href="/weeks/") Weeks
+										%li
+											%a(href="/groups/") Groups
+							%li.dropdown
+								%a(href="#" data-toggle="dropdown") 
+									Exams
+									%b.caret
+
+									%ul.dropdown-menu
+										%li
+											%a(href="/exams") Exams
+										%li
+											%a(href="/rooms") Rooms
+							%li.dropdown
+								%a(href="#" data-toggle="dropdown") 
+									Setup
+									%b.caret
+
+									%ul.dropdown-menu
+										%li
+											%a(href="/courses/") Courses
+										%li
+											%a(href="/students/") Students
 							%li
 								%a(href="/about/") About
 

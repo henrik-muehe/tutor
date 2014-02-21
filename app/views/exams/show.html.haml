@@ -1,0 +1,30 @@
+%p#notice= notice
+
+%h1 
+	Exam #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
+	= link_to '(edit)', edit_exam_path(@exam)
+
+%h2 Tasks
+%ul
+	- @exam.exam_tasks.order(:number).each do |r|
+		%li
+			= r.number
+			= r.name
+			(#{r.max_points})
+
+
+%h2 Rooms
+%ul
+	- @exam.rooms.order(:name).each do |r|
+		%li= r.name
+
+%h2 Seat Assignment
+- if @exam.seat_assignment
+	%ul
+		%li= link_to 'Printout for room door', { action: :print_roomdoor }
+		%li= link_to 'Printout for signatures', { action: :print_signatures }
+		%li= link_to 'Export seats to TUMonline', { action: :export_seats }
+		%li= link_to 'Export grades to TUMonline', { action: :export_grades }
+	= button_to 'Reset seats', { action: :reset_seats }, :class => "btn btn-danger btn-xs", :data => { :confirm => 'Are you sure?' }
+- else
+	= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140219082455) do
+ActiveRecord::Schema.define(version: 20140221101933) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -51,6 +51,70 @@ ActiveRecord::Schema.define(version: 20140219082455) do
   add_index "courses_users", ["course_id"], name: "index_courses_users_on_course_id"
   add_index "courses_users", ["user_id"], name: "index_courses_users_on_user_id"
 
+  create_table "exam_assessments", force: true do |t|
+    t.integer  "exam_id"
+    t.integer  "student_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exam_assessments", ["exam_id"], name: "index_exam_assessments_on_exam_id"
+  add_index "exam_assessments", ["student_id"], name: "index_exam_assessments_on_student_id"
+
+  create_table "exam_seats", force: true do |t|
+    t.integer  "exam_id"
+    t.integer  "student_id"
+    t.integer  "room_id"
+    t.string   "seat_string"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exam_seats", ["exam_id"], name: "index_exam_seats_on_exam_id"
+  add_index "exam_seats", ["room_id"], name: "index_exam_seats_on_room_id"
+  add_index "exam_seats", ["student_id"], name: "index_exam_seats_on_student_id"
+
+  create_table "exam_task_assessments", force: true do |t|
+    t.integer  "exam_task_id"
+    t.decimal  "points",             precision: 4, scale: 2
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "exam_assessment_id"
+  end
+
+  add_index "exam_task_assessments", ["exam_assessment_id"], name: "index_exam_task_assessments_on_exam_assessment_id"
+  add_index "exam_task_assessments", ["exam_task_id"], name: "index_exam_task_assessments_on_exam_task_id"
+
+  create_table "exam_tasks", force: true do |t|
+    t.integer  "exam_id"
+    t.integer  "number"
+    t.string   "name"
+    t.integer  "max_points"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exam_tasks", ["exam_id"], name: "index_exam_tasks_on_exam_id"
+
+  create_table "exams", force: true do |t|
+    t.string   "name"
+    t.datetime "start"
+    t.text     "original_import"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "seat_assignment"
+  end
+
+  create_table "exams_rooms", force: true do |t|
+    t.integer  "exam_id"
+    t.integer  "room_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exams_rooms", ["exam_id"], name: "index_exams_rooms_on_exam_id"
+  add_index "exams_rooms", ["room_id"], name: "index_exams_rooms_on_room_id"
+
   create_table "groups", force: true do |t|
     t.string   "name"
     t.datetime "start"
@@ -64,6 +128,13 @@ ActiveRecord::Schema.define(version: 20140219082455) do
   create_table "groups_students", force: true do |t|
     t.integer "group_id"
     t.integer "student_id"
+  end
+
+  create_table "rooms", force: true do |t|
+    t.string   "name"
+    t.text     "seats"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sessions", force: true do |t|

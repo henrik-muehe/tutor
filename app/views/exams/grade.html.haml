@@ -1,0 +1,37 @@
+%h1 
+	Grading #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
+	= link_to '(edit)', edit_exam_path(@exam)
+
+%p.alert.alert-danger
+	Select a letter to add grades for. FIRST get the exams, THEN select the letter. Exams act as a mutual exclusion, this system does not.
+
+%h2
+	- ("A".."Z").each do |l|
+		%a.letter{ :href => "#", "data-letter" => l }= l
+
+%table.table.table-bordered.table-striped
+	%thead
+		%th Lastname
+		%th Firstname
+		%th MatrNr
+		%th Grade Expression
+	%tbody		
+
+:coffeescript
+	loadLetter = (l) ->
+		$.get '?letter='+l, (participants)->
+			$("tbody tr").remove()
+			for p,i in participants
+				row = $("<tr/>")
+				lastname = $("<td>").text(p.FAMILY_NAME_OF_STUDENT); row.append(lastname)
+				firstname = $("<td>").text(p.FIRST_NAME_OF_STUDENT); row.append(firstname)
+				matrnr = $("<td>").text(p.REGISTRATION_NUMBER); row.append(matrnr)
+				expression = $('<td><input placeholder="a1+a2+a3..+a9" class="form-control" type="text" name="points['+p.HASH+']" /></td>'); 
+				$(expression).find("input").attr("autofocus","autofocus") if i == 0
+				row.append(expression)
+				$("tbody").append(row)
+
+	$(".letter").click (e)->
+		letter = $(e.target).attr("data-letter")
+		loadLetter(letter)
+		return false

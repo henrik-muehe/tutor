@@ -7,7 +7,6 @@ class AnalysesController < ApplicationController
 	# GET /analyses.json
 	def index
 		@analyses = Analysis.all
-		p current_user
 		@analyses = @analyses.where(:admin => false) if current_user.nil? or (current_user.role != "admin" and current_user.role != "analyst")
 	end
 
