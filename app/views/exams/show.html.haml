@@ -24,7 +24,7 @@
 				%th From student (incl.)
 				%th To student (incl.)
 		%tbody
-			- @exam.roominfo.each do |r|
+			- @exam.roominfo_public.each do |r|
 				%tr
 					%td= r[:name]
 					%td= r[:count]

@@ -29,10 +29,41 @@ class Exam < ActiveRecord::Base
 			{
 				name: room.name,
 				count: exam_seats.where(:room_id => room.id).count,
-				first: students.first.name,
-				last: students.last.name,
+				first: ActiveSupport::Inflector.transliterate(students.first.name),
+				last: ActiveSupport::Inflector.transliterate(students.last.name),
 			}
 		end
+	end
+
+	def prefix_length(a,b)
+		minl = [a.length,b.length].min
+		(0..minl-1).each do |i|
+			return i if (a[i]!=b[i]) 
+		end
+		return minl
+	end
+
+	def roominfo_public
+		info = roominfo
+		last = nil
+		clean = []
+		info.each_with_index do |i,index|
+			if last.nil? then
+				i[:first] = "A"
+			else
+				l = prefix_length(i[:first], last[:last])
+				last[:last] = last[:last][0,l+1]
+				i[:first] = i[:first][0,l+1]
+			end
+
+			if index == info.length-1
+				i[:last] = "Z"
+			end 
+
+			clean << i
+			last=i
+		end
+		clean
 	end
 
 	def original_import=(v)
