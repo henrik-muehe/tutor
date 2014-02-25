@@ -152,6 +152,7 @@
 
 		$("form.chat").submit ->
 			msg=$("input#new-msg").val()
+			setTimeout((-> document.title = 'Chat'), 1500)
 
 			$.post(window.location,{
 				msg: msg
