@@ -19,5 +19,7 @@
 //= require bootstrap-switch
 //= require codemirror
 //= require cocoon
+//= require moment
+//= require handlebars
 //= require wheel
 //= require_tree .

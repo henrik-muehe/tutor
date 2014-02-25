@@ -1,5 +1,9 @@
 Tutor::Application.routes.draw do
 
+  get "chat/:room/:nickname", to: "chat#index"
+  post "chat/:room/:nickname", to: "chat#write"
+  get "chat/:room/:nickname/refresh/:lastid", to: "chat#refresh"
+
   resources :exams
 
   resources :rooms

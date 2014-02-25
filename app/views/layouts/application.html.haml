@@ -9,7 +9,7 @@
 		= javascript_include_tag "application", "data-turbolinks-track" => true, :debug => true
 		= csrf_meta_tags
 		:css
-			.container { max-width: 9999px; width: 95%; }
+			.container-full { max-width: 9999px !important; margin: 0 auto; margin: 10px }
 
 	%body
 		- if current_user && current_user.role == "admin"
@@ -86,7 +86,7 @@
 							%li.navbar-text
 
 
-		%div.container
+		%div.container-full
 			- unless notice.blank? and alert.blank?		
 				%div.col-md-12
 					- if notice

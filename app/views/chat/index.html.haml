@@ -1,0 +1,163 @@
+%h1 Chat #{params[:room]}
+
+%div#notice(style="opacity:0.6; background-color:red; width:100%; height:100%; z-index:999;top:0; left:0;position:fixed")
+
+%div#wrapper(style="overflow-y:scroll")
+	%div#chat(style="font-family: courier; height: 100%")
+
+%div
+	%form.chat
+		%input#new-msg.form-control(autofocus="autofocus")
+
+%script#message(type="text/x-handlebars-template")
+	%div(style=" background-color: {{color}}")
+		%div.pull-left(style="min-width:180px; font-weight: bold")
+			{{dateFormat datetime format="HH:mm:ss"}} &lt;{{nickname}}&gt;
+		%div
+			{{message}}
+
+:javascript
+	String.prototype.hashCode = function(){
+	    var hash = 0, i, char;
+	    if (this.length == 0) return hash;
+	    for (i = 0, l = this.length; i < l; i++) {
+	        char  = this.charCodeAt(i);
+	        hash  = ((hash<<5)-hash)+char;
+	        hash |= 0; // Convert to 32bit integer
+	    }
+	    return hash;
+	};
+	var RColor = function() {
+		this.hue			= Math.random()
+		this.goldenRatio 	= 0.618033988749895;
+		this.hexwidth		= 2;
+	};
+
+	RColor.prototype.hsvToRgb = function (h,s,v) {
+		var	h_i	= Math.floor(h*6),
+			f 	= h*6 - h_i,
+			p	= v * (1-s),
+			q	= v * (1-f*s),
+			t	= v * (1-(1-f)*s),
+			r	= 255,
+			g	= 255,
+			b	= 255;
+		switch(h_i) {
+			case 0:	r = v, g = t, b = p;	break;
+			case 1:	r = q, g = v, b = p;	break;
+			case 2:	r = p, g = v, b = t;	break;
+			case 3:	r = p, g = q, b = v;	break;
+			case 4: r = t, g = p, b = v;	break;
+			case 5: r = v, g = p, b = q;	break;
+		}
+		return [Math.floor(r*256),Math.floor(g*256),Math.floor(b*256)];
+	};
+
+	RColor.prototype.padHex = function(str) {
+		if(str.length > this.hexwidth) return str;
+		return new Array(this.hexwidth - str.length + 1).join('0') + str;
+	};
+
+	RColor.prototype.get = function(h,hex,saturation,value) {
+		this.hue=h
+		this.hue += this.goldenRatio;
+		this.hue %= 1;
+		if(typeof saturation !== "number")	saturation = 0.5;
+		if(typeof value !== "number")		value = 0.95;
+		var rgb = this.hsvToRgb(this.hue,saturation,value);
+		if(hex)
+			return "#" +  this.padHex(rgb[0].toString(16))
+						+ this.padHex(rgb[1].toString(16))
+						+ this.padHex(rgb[2].toString(16));
+		else 
+			return rgb;
+	};
+
+
+:coffeescript
+	stringToFloat = (s) ->
+		Math.abs(s.hashCode())/Math.pow(2,31)
+
+	colorForName = (s) ->
+		c=new RColor()
+		console.log stringToFloat(s)
+		c.get(stringToFloat(s),true,0.15,0.99)
+
+	Handlebars.registerHelper 'dateFormat', (context, block)->
+		if moment
+			f = block.hash.format || "MMM Do, YYYY";
+			return moment(new Date(Number(context)*1000)).format(f);
+		else
+			return context;
+
+	$(document).ready ->
+		flash_state = 1
+		flash_enabled=false
+		$("#notice").hide()
+		setInterval =>
+			if flash_enabled 
+				if flash_state == 0
+					$("#notice").show()
+					document.title= '** HERE **'
+					flash_state=1
+				else
+					$("#notice").hide()
+					document.title= '** LOOK **'
+					flash_state=0
+		, 500
+		flash = ->
+			flash_enabled = true
+		unflash = ->
+			flash_enabled = false
+			document.title="Chat"
+			$("#notice").hide()
+		$(document).click -> unflash()
+		$(document).keydown -> unflash()
+
+		down = ->
+			$("#wrapper").scrollTop($("#wrapper")[0].scrollHeight);
+
+		resize = -> 
+			$("#wrapper").height("auto")
+			$("#wrapper").height($(window).innerHeight() - ($("body").height() - $("#wrapper").height()) - 35)
+			down()
+		$(window).resize resize
+		resize()
+
+		window.lastid = 0
+		messages = []
+
+		runCommands = (set) =>
+			for m in set
+				flash() if m.message == "FLASH" and m.admin == true
+				window.location.reload() if m.message == "RELOAD" and m.admin == true
+				window.location = m.message.substr(9) if m.message.indexOf("REDIRECT") == 0
+
+		render = (set)=>
+			c = $("#chat")
+			template = Handlebars.compile($("#message").html().trim())
+			for m in set
+				m.color = colorForName(m.nickname)
+				c.append(template(m))
+			down()
+
+		refresh = =>
+			$.get window.location + "/refresh/" + window.lastid, (res)->
+				return if res.length == 0
+				messages = messages.concat(res)
+				runCommands(res) if window.lastid != 0
+				window.lastid=messages[messages.length-1].id
+				render(res)
+
+		$("form.chat").submit ->
+			msg=$("input#new-msg").val()
+
+			$.post(window.location,{
+				msg: msg
+			})
+
+			$("input").val('')
+			return false;
+
+		setInterval(refresh, 2000)
+		refresh()

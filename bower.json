@@ -19,6 +19,9 @@
     "select2": "~3.4.3",
     "fullcalendar": "~1.6.4",
     "codemirror": "~3.19.0",
-    "bootstrap-switch": "~2.0.1"
+    "bootstrap-switch": "~2.0.1",
+    "mustache": "~0.8.1",
+    "handlebars": "~2.0.0-alpha.1",
+    "moment": "~2.5.1"
   }
 }
