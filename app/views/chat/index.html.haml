@@ -1,3 +1,5 @@
+%script(src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js")
+
 %h1 Chat #{params[:room]}
 
 %div#notice(style="opacity:0.6; background-color:red; width:100%; height:100%; z-index:999;top:0; left:0;position:fixed")
@@ -5,7 +7,7 @@
 %div#wrapper(style="overflow-y:scroll")
 	%div#chat(style="font-family: courier; height: 100%")
 
-%div
+%div(style="margin-top:5px")
 	%form.chat
 		%input#new-msg.form-control(autofocus="autofocus")
 
@@ -18,14 +20,11 @@
 
 :javascript
 	String.prototype.hashCode = function(){
-	    var hash = 0, i, char;
-	    if (this.length == 0) return hash;
-	    for (i = 0, l = this.length; i < l; i++) {
-	        char  = this.charCodeAt(i);
-	        hash  = ((hash<<5)-hash)+char;
-	        hash |= 0; // Convert to 32bit integer
+	    var i,hash=0;
+	    for (i=0; i<this.length; i++) {
+	    	hash+=this[i].charCodeAt() * (i+1);
 	    }
-	    return hash;
+	    return Math.abs(hash)%10000;
 	};
 	var RColor = function() {
 		this.hue			= Math.random()
@@ -76,7 +75,7 @@
 
 :coffeescript
 	stringToFloat = (s) ->
-		Math.abs(s.hashCode())/Math.pow(2,31)
+		Math.abs(CryptoJS.MD5(s).words[3])/Math.pow(2,32)
 
 	colorForName = (s) ->
 		c=new RColor()
@@ -145,7 +144,9 @@
 			$.get window.location + "/refresh/" + window.lastid, (res)->
 				return if res.length == 0
 				messages = messages.concat(res)
-				runCommands(res) if window.lastid != 0
+				if window.lastid != 0
+					runCommands(res) 
+					document.title= '** New Messages **'
 				window.lastid=messages[messages.length-1].id
 				render(res)
 
