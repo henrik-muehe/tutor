@@ -1,0 +1,33 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th Name
+      %th Start
+      %th Participants
+      %th Rooms
+      %th Seats
+      %th Grades
+      %th
+      %th
+      %th
+
+  %tbody
+    - exams.each do |exam|
+      %tr
+        %td= exam.name
+        %td= exam.start.strftime("%d.%m.%y")
+        %td= exam.students.length
+        %td= exam.rooms.length
+        %td 
+          - if exam.seats?
+            %i.glyphicon.glyphicon-ok.text-success
+          - else
+            %i.glyphicon.glyphicon-remove.text-danger
+        %td 
+          - if exam.graded?
+            %i.glyphicon.glyphicon-ok.text-success
+          - else
+            %i.glyphicon.glyphicon-remove.text-danger
+        %td= link_to 'Show', exam
+        %td= link_to 'Edit', edit_exam_path(exam)
+        %td= link_to 'Destroy', exam, :method => :delete, :data => { :confirm => 'Are you sure?' }

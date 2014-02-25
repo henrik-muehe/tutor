@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140221101933) do
+ActiveRecord::Schema.define(version: 20140225082230) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -103,7 +103,11 @@ ActiveRecord::Schema.define(version: 20140221101933) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "seat_assignment"
+    t.string   "magictoken"
+    t.integer  "course_id"
   end
+
+  add_index "exams", ["course_id"], name: "index_exams_on_course_id"
 
   create_table "exams_rooms", force: true do |t|
     t.integer  "exam_id"
@@ -114,6 +118,14 @@ ActiveRecord::Schema.define(version: 20140221101933) do
 
   add_index "exams_rooms", ["exam_id"], name: "index_exams_rooms_on_exam_id"
   add_index "exams_rooms", ["room_id"], name: "index_exams_rooms_on_room_id"
+
+  create_table "exams_students", force: true do |t|
+    t.integer "exam_id"
+    t.integer "student_id"
+  end
+
+  add_index "exams_students", ["exam_id"], name: "index_exams_students_on_exam_id"
+  add_index "exams_students", ["student_id"], name: "index_exams_students_on_student_id"
 
   create_table "groups", force: true do |t|
     t.string   "name"

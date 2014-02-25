@@ -37,7 +37,8 @@ Tutor::Application.routes.draw do
   get "exams/:id/print_signatures", to: "exams#print_signatures"
   get "exams/:id/export_seats", to: "exams#export_seats"
   get "exams/:id/export_grades", to: "exams#export_grades"
-  get "exams/:id/grade", to: "exams#grade"
+  get "exams/:id/grade/:magictoken", to: "exams#grade"
+  post "exams/:id/grade/:magictoken", to: "exams#grade_save"
 
   devise_for :users
 

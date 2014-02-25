@@ -1,57 +1,69 @@
 require 'csv'    
 
 class Exam < ActiveRecord::Base
+	belongs_to :course
+	
 	has_and_belongs_to_many :rooms
 	accepts_nested_attributes_for :rooms
+
 	has_many :exam_tasks
   	accepts_nested_attributes_for :exam_tasks, reject_if: :all_blank, allow_destroy: true
+
 	has_many :exam_seats
+	has_and_belongs_to_many :students
 
 	def seats?
-		not seat_assignment.nil?
+		exam_seats.length > 0
 	end
 
 	def graded?
 		false
 	end
-	
-	def participants
-		parts = []
-		CSV.new(original_import, { 
-			:encoding => 'bom|utf-8', 
+
+	def original_import=(v)
+		write_attribute(:original_import, File.read(v.path, :encoding => 'iso-8859-15'))
+
+		self.start=nil
+		self.students = []
+		CSV.open(v.path, { 
+			:encoding => 'iso-8859-15', 
 			:headers => true,
 			:col_sep => ';' 
 		}).each do |row|
-			if not self.start
-				self.start = DateTime.parse(row["DATE_OF_ASSESSMENT"]) 
-				save
-			end
-			parts << row
+			self.start = DateTime.parse(row["DATE_OF_ASSESSMENT"]) 
+			s = Student.find_or_create_by_matrnr(row["REGISTRATION_NUMBER"].to_i)
+			s.update_attributes({ :lastname => row["FAMILY_NAME_OF_STUDENT"], :firstname => row["FIRST_NAME_OF_STUDENT"] })
+			self.students << s
 		end
-		parts
 	end
 
-	def export(filename,info)
-		# tum online requires the format to be exactly this
+	def export(filename)
+		# open original import
+		orig = CSV.new(original_import, { 
+			headers: true,
+			write_headers: true,
+			col_sep: ';' 
+		})
+
+		# build something alike for output
 		CSV.open(filename, "w", 
 			:encoding => 'iso-8859-15', 
-			:headers => true, 
+			:headers => true,
+			:write_headers => true, 
 			:col_sep => ';',
 			:force_quotes => true
 		) do |csv|
-			csv << participants.first.to_hash.keys
-			participants.each do |p|
-				p["REMARK"] = info[p["REGISTRATION_NUMBER"].to_i.to_s]
+			csv << orig.first.to_hash.keys
+			orig.each do |p|
+				p["REMARK"] = yield p["REGISTRATION_NUMBER"].to_i
 				csv << p
 			end
 		end
 	end
 
 	def export_seats(filename)
-		mapping = {}
-	    seats = JSON.parse(seat_assignment)
-	    seats.each do |r| mapping.merge! r["mapping"] end
-	    	p mapping
-	   	export(filename,mapping)
+		export(filename) do |matrnr|
+			exam_seats.includes(:student).where("students.matrnr" => matrnr).first.seat_string
+		end
 	end
 end

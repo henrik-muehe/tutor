@@ -4,14 +4,20 @@ require 'tempfile'
 require 'digest/sha1'
 
 class ExamsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :admincheck, except: [:grade]
-  before_action :set_exam, only: [:show, :edit, :update, :destroy, :assign_seats, :reset_seats, :print_roomdoor, :print_signatures, :export_seats, :export_grades, :grade]
+  before_filter :authenticate_user!, except: [:grade, :grade_save]
+  before_filter :admincheck, except: [:grade, :grade_save]
+  before_filter :magiccheck, only: [:grade, :grade_save]
+  before_action :set_exam, only: [:show, :edit, :update, :destroy, :assign_seats, :reset_seats, :print_roomdoor, :print_signatures, :export_seats, :export_grades, :grade, :grade_save]
+
+  def magiccheck
+    render_403 unless Exam.where(id: params[:id], magictoken: params[:magictoken]).present?
+  end
 
   # GET /exams
   # GET /exams.json
   def index
-    @exams = Exam.all
+    @exams = @course.exams
+    @other_exams = Exam.where('id not in (?)', @exams.map{ |e| e.id }.to_a + [ -1 ])
   end
 
   # GET /exams/1
@@ -21,7 +27,7 @@ class ExamsController < ApplicationController
 
   # GET /exams/new
   def new
-    @exam = Exam.new
+    @exam = Exam.new({course: @course})
   end
 
   # GET /exams/1/edit
@@ -31,11 +37,33 @@ class ExamsController < ApplicationController
   def grade
     if params["letter"]
       l = params["letter"]
-      return render :json => @exam.participants.select { |p| fix(p["FAMILY_NAME_OF_STUDENT"])[0] == l }
-        .map { |p| p.to_hash }
-        .map { |p| p.select { |k,v| k == "FAMILY_NAME_OF_STUDENT" || k == "FIRST_NAME_OF_STUDENT" || k == "REGISTRATION_NUMBER" } }
-        .map { |p| p.merge({ "HASH" => Digest::SHA1.hexdigest("FUNNYHASH"+p["REGISTRATION_NUMBER"]), "REGISTRATION_NUMBER" => "xxxx" + p["REGISTRATION_NUMBER"][-4,4] }) }
+      return render json: @exam.students.to_a.select { |student| fix(student.lastname)[0] == l }
+        .map { |student| student.serializable_hash.select { |k,v| ["matrnr","lastname","firstname","id"].include?(k) } }
+        .map { |student| 
+          ea = ExamAssessment.where(student_id: student["id"], exam: @exam).first
+          student.merge({
+            matrnr: "xxxx" + student["matrnr"].to_s[-4,4], 
+            assessment_string: ea.present? ? ea.assessment_string : ""
+          }) 
+        }
     end
+
+    if params["check"]
+      a = ExamAssessment.new({ exam: @exam, assessment_string: params["check"] })
+      a.valid?
+      render :json => a.errors[:exam_task_assessments].to_a
+    end
+  end
+
+  def grade_save
+    params["points"].each do |id,str|
+      ExamAssessment.create({
+        exam: @exam,
+        student: Student.find(id),
+        assessment_string: str
+      })
+    end
+    redirect_to :action => :grade, :magictoken => params[:magictoken]
   end
 
   def extract_seat(s)
@@ -64,48 +92,38 @@ class ExamsController < ApplicationController
 
   def print_signatures
     file="/tmp/signatures-#{Time.now.to_i}.pdf"
-    seats = JSON.parse(@exam.seat_assignment)
-
     Prawn::Document.generate(file, :page_layout => :landscape) do |pdf|
-      seats.each_with_index do |roominfo,index|
+      @exam.rooms.order(:name).each_with_index do |room,index|
         pdf.start_new_page if index!=0
 
         # header
-        pdf.formatted_text [{ text: "Unterschriften #{@exam["name"]} - #{roominfo["room"]["name"]}", styles: [:bold], size: 27 }]
+        pdf.formatted_text [{ text: "Unterschriften #{@exam.name} - #{room.name}", styles: [:bold], size: 27 }]
         pdf.move_down 15
 
-        # table
-        seat2reg = roominfo["mapping"].invert
-        reg2student = {}; roominfo["students"].each do |s| reg2student[s["REGISTRATION_NUMBER"].to_i.to_s] = s end
-
         t = [["<b>MatrNr</b>", "<b>Lastname</b>", "<b>Firstname</b>", "<b>Row</b>", "<b>Seat</b>", "<b>Unterschrift</b>"]]
-        t+= roominfo["room"]["seats"].split(/\r?\n/).sort do |a,b|
-          seata = extract_seat(a)
-          seatb = extract_seat(b)
-          seata <=> seatb
-        end.map do |seat|
-          r = seat2reg[seat].to_i.to_s
-          seat = extract_seat(seat)
-          if r == "0" then
-            [ "<font size='7'><sup>reserve</sup></font>", "", "", seat.first, seat.last, "" ]
+        t+= @exam.exam_seats.includes(:student).where(room_id: room).to_a.sort_by { |a| 
+          a.split 
+        }.map do |seat|
+          if not seat.student.present?
+            [ "<font size='7'><sup>reserve</sup></font>", "", "", seat.row, seat.seat, "" ]
           else
-            s = reg2student[r]
             [ 
-              s["REGISTRATION_NUMBER"],
-              s["FAMILY_NAME_OF_STUDENT"],
-              s["FIRST_NAME_OF_STUDENT"],
-              seat.first,
-              seat.last,
+              seat.student.matrnr,
+              seat.student.lastname,
+              seat.student.firstname,
+              seat.row,
+              seat.seat,
               ""
             ]
           end
         end
+
         pdf.table t, { 
           :header => true,
           :row_colors =>["FFFFFF","eeeeee"], 
           :width => pdf.bounds.width, 
           :cell_style =>{:inline_format => true }, 
-          :column_widths => {5 => 300}
+          :column_widths => {5 => 250}
         }
       end
 
@@ -115,31 +133,28 @@ class ExamsController < ApplicationController
   end
 
   def print_roomdoor
-    seats = JSON.parse(@exam.seat_assignment)
-
-    Prawn::Document.generate('roomdoor.pdf') do |pdf|
-      seats.each_with_index do |roominfo,index|
+    file="/tmp/roomdoor-#{Time.now.to_i}.pdf"
+    Prawn::Document.generate(file) do |pdf|
+      @exam.rooms.order(:name).each_with_index do |room,index|
         pdf.start_new_page if index!=0
 
         # header
-        pdf.formatted_text [
-          { text: @exam["name"], styles: [:bold], size: 27 },
-          { text: "  -  ", styles: [:bold], size: 27 },
-          { text: roominfo["room"]["name"], styles: [:bold], size: 27 },
-        ]
+        pdf.formatted_text [{ text: "Aushang #{@exam.name} - #{room.name}", styles: [:bold], size: 27 }]
         pdf.move_down 15
 
         # table
         t = [["<b>Lastname</b>", "<b>Firstname</b>", "<b>Seat</b>"]]
-        t+= roominfo["students"].map do |s|
-          [ s["FAMILY_NAME_OF_STUDENT"],s["FIRST_NAME_OF_STUDENT"],roominfo["mapping"][s["REGISTRATION_NUMBER"].to_i.to_s]]
+        t+= @exam.exam_seats.includes(:student).where(room_id: room).sort { |a,b| 
+          [fix(a.student.lastname),fix(a.student.firstname)]<=>[fix(b.student.lastname),fix(b.student.firstname)]
+        }.map do |seat|
+          [ seat.student.lastname,seat.student.firstname,seat.seat_string]
         end
         pdf.table t, header: true,:row_colors =>["FFFFFF","eeeeee"], :width => pdf.bounds.width, :cell_style =>{:inline_format => true }
       end
 
       pdf.number_pages "<page>/<total>", {:at => [0, -3],:size => 7}
-      send_data pdf.render, :filename => "roomdoor.pdf", :type => "application/pdf"
     end
+    send_file file, :type => "application/pdf", :disposition => "attachment"
   end
 
   def fix(s)
@@ -147,53 +162,52 @@ class ExamsController < ApplicationController
   end
 
   def assign_seats
-    return redirect_to @exam, notice: "You must reset the seat assignment before calling assign again" if @exam.seat_assignment
-    parts = @exam.participants
+    return redirect_to @exam, notice: "You must reset the seat assignment before calling assign again" if @exam.exam_seats.length > 0
 
-    # Determine available and required seats
-    rooms = @exam.rooms
-    roomCounts = rooms.map { |r| r.seat_count }
-    total = roomCounts.inject(0) { |sum, r| sum + r }
-    leftover = total - parts.size
-    return redirect_to @exam, notice: "You have insufficient rooms, you need #{-leftover} more seats." if leftover < 0
+    ActiveRecord::Base.transaction do
+      # Determine available and required seats
+      rooms = @exam.rooms.order(:name)
+      roomCounts = rooms.map { |r| r.seat_count }
+      total = roomCounts.inject(0) { |sum, r| sum + r }
+      leftover = total - @exam.students.size
+      return redirect_to @exam, notice: "You have insufficient rooms, you need #{-leftover} more seats." if leftover < 0
 
-    # Convervatively even out on rooms
-    roomCounts.map! { |r| (r * (1-(leftover/total.to_f))).ceil }
+      # Convervatively even out on rooms
+      roomCounts.map! { |r| (r * (1-(leftover/total.to_f))).ceil }
 
-    # Reduce largest room until exact count is reached
-    while roomCounts.reduce(:+) > parts.size
-      roomCounts[roomCounts.each_with_index.max[1]] -= 1
-    end
+      # Reduce largest room until exact count is reached
+      while roomCounts.reduce(:+) > @exam.students.size
+        roomCounts[roomCounts.each_with_index.max[1]] -= 1
+      end
 
-    # Split students
-    last = 0
-    roomStudents = rooms.map { [] }
-    currentRoom=0
-    parts.sort {|a,b| [fix(a["FAMILY_NAME_OF_STUDENT"]), fix(a["FIRST_NAME_OF_STUDENT"])] <=> [fix(b["FAMILY_NAME_OF_STUDENT"]), fix(b["FIRST_NAME_OF_STUDENT"])] }.each do |p|
-      roomStudents[currentRoom] << p.to_hash
-      currentRoom+=1 if (roomStudents[currentRoom].length >= roomCounts[currentRoom])
-    end
+      # Split students
+      last = 0
+      roomStudents = rooms.map { [] }
+      currentRoom=0
+      students = @exam.students.sort { |a,b| [fix(a.lastname),fix(a.firstname)]<=>[fix(b.lastname),fix(b.firstname)] }
+      students.each do |s|
+        roomStudents[currentRoom] << s
+        currentRoom+=1 if (roomStudents[currentRoom].length >= roomCounts[currentRoom])
+      end
 
-    # Generate data to save
-    @exam.seat_assignment = (rooms.each_with_index.map do |r,index|
       # Map seats
-      rs = r.seats.split(/\r?\n/).shuffle
-      mapping = {}
-      roomStudents[index].each_with_index { |s,i| p s; mapping[s["REGISTRATION_NUMBER"].to_i] = rs[i.to_i] }
-      {
-        room: r, 
-        seats_used: roomCounts[index],
-        students: roomStudents[index],
-        mapping: mapping
-      }
-    end).to_json
-    @exam.save
+      rooms.each_with_index.map do |room,index|
+        random_seats = room.seats.split(/\r?\n/).shuffle
+        roomStudents[index].each_with_index do |student,i| 
+          @exam.exam_seats << ExamSeat.create({ student: student, room: room, seat_string: random_seats[i] })
+        end
+        for i in (roomStudents[index].length..random_seats.length-1)
+          @exam.exam_seats << ExamSeat.create({ room: room, seat_string: random_seats[i] })
+        end
+      end
+      @exam.save
+    end
 
     redirect_to @exam
   end
 
   def reset_seats
-    @exam.seat_assignment = nil
+    @exam.exam_seats.delete_all
     @exam.save
     redirect_to @exam, notice: "Seat assignment successfully reset."
   end
@@ -246,6 +260,6 @@ class ExamsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def exam_params
-      params.require(:exam).permit(:name, :start, :original_import, { :room_ids => [] }, :exam_tasks_attributes => [:id, :number, :name, :max_points, :_destroy] )
+      params.require(:exam).permit(:name, :start, :original_import, :magictoken, { :room_ids => [] }, :exam_tasks_attributes => [:id, :number, :name, :max_points, :_destroy] )
     end
 end

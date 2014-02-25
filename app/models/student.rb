@@ -1,5 +1,6 @@
 class Student < ActiveRecord::Base
 	has_and_belongs_to_many :groups
+	has_and_belongs_to_many :exams
 	has_many :assessments
 
 	def total(course, limit=Time.now)

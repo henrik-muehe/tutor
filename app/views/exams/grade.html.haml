@@ -2,36 +2,68 @@
 	Grading #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
 	= link_to '(edit)', edit_exam_path(@exam)
 
-%p.alert.alert-danger
+%p.alert.alert-danger#notice
 	Select a letter to add grades for. FIRST get the exams, THEN select the letter. Exams act as a mutual exclusion, this system does not.
 
 %h2
 	- ("A".."Z").each do |l|
 		%a.letter{ :href => "#", "data-letter" => l }= l
 
-%table.table.table-bordered.table-striped
-	%thead
-		%th Lastname
-		%th Firstname
-		%th MatrNr
-		%th Grade Expression
-	%tbody		
+= form_tag url_for(action: :grade, id: @exam), method: :post do
+	%table.table.table-bordered.table-striped
+		%thead
+			%th Lastname
+			%th Firstname
+			%th MatrNr
+			%th Grade Expression
+			%th Status
+		%tbody
+
+	= submit_tag 'Save'
 
 :coffeescript
 	loadLetter = (l) ->
+		$("#notice").hide()
 		$.get '?letter='+l, (participants)->
 			$("tbody tr").remove()
-			for p,i in participants
+			for p in participants
 				row = $("<tr/>")
-				lastname = $("<td>").text(p.FAMILY_NAME_OF_STUDENT); row.append(lastname)
-				firstname = $("<td>").text(p.FIRST_NAME_OF_STUDENT); row.append(firstname)
-				matrnr = $("<td>").text(p.REGISTRATION_NUMBER); row.append(matrnr)
-				expression = $('<td><input placeholder="a1+a2+a3..+a9" class="form-control" type="text" name="points['+p.HASH+']" /></td>'); 
-				$(expression).find("input").attr("autofocus","autofocus") if i == 0
+				lastname = $("<td>").text(p.lastname); row.append(lastname)
+				firstname = $("<td>").text(p.firstname); row.append(firstname)
+				matrnr = $("<td>").text(p.matrnr); row.append(matrnr)
+				expression = $('<td><input placeholder="a1+a2+a3..+a9" class="form-control" type="text" name="points['+p.id+']" value="'+p.assessment_string+'"/></td>'); 
+				if !done && p.assessment_string.length == 0
+					$(expression).find("input").attr("autofocus","autofocus") 
+					done=true
 				row.append(expression)
+				if p.assessment_string.length == 0
+					row.append('<td class="text-center"><i style="font-size:15pt" class="status glyphicon glyphicon-remove"></i></td>')
+				else
+					row.append('<td class="text-center"><i style="font-size:15pt" class="status glyphicon glyphicon-ok"></i></td>')
 				$("tbody").append(row)
+
+			# XXX this should really use a view binding
+			$("input").change (e)->
+				$.get '?check='+encodeURIComponent($(e.target).val()), (res)=>
+					icon = $(e.target).closest("td").next().find("i")
+					if res.length == 0
+						icon.addClass("glyphicon-ok")
+						icon.removeClass("glyphicon-remove")
+						icon.addClass("text-success")
+						icon.removeClass("text-danger")
+						$(icon).tooltip({html: true, title:'looks good.'})
+					else
+						icon.removeClass("glyphicon-ok")
+						icon.addClass("glyphicon-remove")
+						icon.removeClass("text-success")
+						icon.addClass("text-danger")
+						icon.attr("alt",)
+						$(icon).tooltip({html: true, title:res.join("<br/>")})
+
+
 
 	$(".letter").click (e)->
 		letter = $(e.target).attr("data-letter")
 		loadLetter(letter)
 		return false
+

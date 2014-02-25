@@ -19,7 +19,7 @@
 		%li= r.name
 
 %h2 Seat Assignment
-- if @exam.seat_assignment
+- if @exam.seats?
 	%ul
 		%li= link_to 'Printout for room door', { action: :print_roomdoor }
 		%li= link_to 'Printout for signatures', { action: :print_signatures }
@@ -28,3 +28,7 @@
 	= button_to 'Reset seats', { action: :reset_seats }, :class => "btn btn-danger btn-xs", :data => { :confirm => 'Are you sure?' }
 - else
 	= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"
+
+%h2 Grades
+%ul
+	%li= link_to 'Grade it', { action: :grade, magictoken: @exam.magictoken }

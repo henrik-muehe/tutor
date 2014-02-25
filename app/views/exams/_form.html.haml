@@ -7,11 +7,19 @@
           %li= msg
 
   .form-group
+    = f.label :course_id
+    = f.collection_select :course_id, Course.all, :id, :name, {}, { class: 'form-control' }
+  .form-group
     = f.label :name
     = f.text_field :name, :class => "form-control"
   .form-group
+    = f.label :magictoken
+    %a(onclick="$('#exam_magictoken').val(Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2));") (generate random token)
+    = f.text_field :magictoken, :class => "form-control"
+  .form-group
     = f.label :original_import, "TUMonline CSV for Exam"
-    = f.text_area :original_import, :class => "form-control", :rows => 15
+    = f.file_field :original_import 
+    - #= f.text_area :original_import, :class => "form-control", :rows => 15
   .form-group
     = f.label :exam_tasks
     #exam_tasks.form-horizontal(style="padding-left:10px")

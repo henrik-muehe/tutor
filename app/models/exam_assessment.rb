@@ -1,12 +1,13 @@
 class ExamAssessment < ActiveRecord::Base
 	belongs_to :exam
 	has_many :exam_task_assessments
+	belongs_to :student
 
 	validates :exam, presence: true
 	validate :task_assessments_equal_number_of_tasks
 
 	def task_assessments_equal_number_of_tasks
-		self.errors[:exam_task_assessments] << "Number of assessments must match number of tasks in exam." if exam_task_assessments.length != exam.exam_tasks.length	
+		self.errors[:exam_task_assessments] << "Number of assessments must match number of tasks in exam (#{exam_task_assessments.length} vs. #{exam.exam_tasks.length})." if exam_task_assessments.length != exam.exam_tasks.length	
 	end
 
 	def assessment_string=(v)
@@ -15,8 +16,14 @@ class ExamAssessment < ActiveRecord::Base
 		v.gsub!(/[\s\t\r\n]/, "")
 		v.split("+").each_with_index do |g,i|
 			et = exam.exam_tasks.where(:number => (i+1)).first
-			exam_task_assessments << ExamTaskAssessment.new({ :points => g.to_i, :exam_task => et })
+			points = g.to_f
+			points = nil if not g.match(/^\d+[.,]?\d*$/)
+			exam_task_assessments << ExamTaskAssessment.new({ :points => points, :exam_task => et })
 		end
+	end
+
+	def assessment_string
+		exam_task_assessments.includes(:exam_task).order("exam_tasks.number").map{|x|"%g" % x.points}.join("+")
 	end
 
 	def total
