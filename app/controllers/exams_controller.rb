@@ -144,7 +144,7 @@ class ExamsController < ApplicationController
 
         # table
         t = [["<b>Lastname</b>", "<b>Firstname</b>", "<b>Seat</b>"]]
-        t+= @exam.exam_seats.includes(:student).where(room_id: room).sort { |a,b| 
+        t+= @exam.exam_seats.includes(:student).where(["room_id = ? and student_id is not null",room.id]).sort { |a,b| 
           [fix(a.student.lastname),fix(a.student.firstname)]<=>[fix(b.student.lastname),fix(b.student.firstname)]
         }.map do |seat|
           [ seat.student.lastname,seat.student.firstname,seat.seat_string]
