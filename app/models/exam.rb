@@ -2,7 +2,7 @@ require 'csv'
 
 class Exam < ActiveRecord::Base
 	belongs_to :course
-	
+
 	has_and_belongs_to_many :rooms
 	accepts_nested_attributes_for :rooms
 
@@ -41,20 +41,23 @@ class Exam < ActiveRecord::Base
 		# open original import
 		orig = CSV.new(original_import, { 
 			headers: true,
-			write_headers: true,
 			col_sep: ';' 
 		})
 
 		# build something alike for output
+		first=true
 		CSV.open(filename, "w", 
 			:encoding => 'iso-8859-15', 
-			:headers => true,
-			:write_headers => true, 
+			:headers => false,
+			:write_headers => false,
 			:col_sep => ';',
 			:force_quotes => true
 		) do |csv|
-			csv << orig.first.to_hash.keys
 			orig.each do |p|
+				if first then
+					csv << p.to_hash.keys
+					first=false
+				end
 				p["REMARK"] = yield p["REGISTRATION_NUMBER"].to_i
 				csv << p
 			end
