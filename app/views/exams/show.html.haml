@@ -2,7 +2,7 @@
 
 %h1 
 	Exam #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
-	= link_to '(edit)', edit_exam_path(@exam)
+	= link_to '(edit)', edit_exam_path(@exam), :class => "hidden-print"
 
 %h2.hidden-print Tasks
 %ul.hidden-print
@@ -37,7 +37,7 @@
 
 %h2.hidden-print Seat Assignment
 - if @exam.seats?
-	%ul
+	%ul.hidden-print
 		%li= link_to 'Printout for room door', { action: :print_roomdoor }
 		%li= link_to 'Printout for signatures', { action: :print_signatures }
 		%li= link_to 'Export seats to TUMonline', { action: :export_seats }
