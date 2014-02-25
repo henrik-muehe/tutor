@@ -21,7 +21,7 @@ class ChatController < ApplicationController
   end
 
   def refresh
-    messages = ChatMessage.where("room = ? AND id > ? AND created_at > ?", params[:room], params[:lastid], DateTime.now-3600).map do |m|
+    messages = ChatMessage.where("room = ? AND id > ? AND created_at > ?", params[:room], params[:lastid], 90.minute.ago).map do |m|
       md = JSON.parse(m.message)
       {
         id: m.id,
