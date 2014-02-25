@@ -103,7 +103,7 @@
 			flash_enabled = false
 			document.title="Chat"
 			$("#notice").hide()
-			$("input").focus()
+			$("#new-msg").focus() if document.activeElement != $("#new-msg")[0]
 		$(document).click -> unflash()
 		$(document).keydown -> unflash()
 
@@ -146,14 +146,14 @@
 				render(res)
 
 		$("form.chat").submit ->
-			msg=$("input#new-msg").val()
+			msg=$("#new-msg").val()
 			setTimeout((-> document.title = 'Chat'), 1500)
 
 			$.post(window.location,{
 				msg: msg
 			})
 
-			$("input").val('')
+			$("#new-msg").val('')
 			return false;
 
 		setInterval(refresh, 2000)
