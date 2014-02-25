@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140225131830) do
+ActiveRecord::Schema.define(version: 20140225164442) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20140225131830) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "chat_messages", ["room"], name: "index_chat_messages_on_room"
 
   create_table "courses", force: true do |t|
     t.string   "name"

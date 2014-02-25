@@ -1,4 +1,5 @@
 %script(src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js")
+%script(src="/howler.min.js")
 
 %h1 Chat #{params[:room]}
 
@@ -17,6 +18,8 @@
 			{{dateFormat datetime format="HH:mm:ss"}} &lt;{{nickname}}&gt;
 		%div
 			{{{message}}}
+
+
 
 :javascript
 	var RColor = function() {
@@ -67,6 +70,8 @@
 
 
 :coffeescript
+	sound = new Howl {urls: ['http://www.qsl.net/yo5ofh/cw/wav/me.wav']}
+
 	stringToFloat = (s) ->
 		Math.abs(CryptoJS.MD5(s).words[3])/Math.pow(2,32)
 
@@ -125,6 +130,7 @@
 				flash() if m.message == "FLASH" and m.admin == true
 				window.location.reload() if m.message == "RELOAD" and m.admin == true
 				window.location = m.message.substr(9) if m.message.indexOf("REDIRECT") == 0
+				sound.play() if m.message.indexOf("BEEP") == 0
 
 		render = (set)=>
 			c = $("#chat")
