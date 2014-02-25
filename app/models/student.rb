@@ -3,6 +3,10 @@ class Student < ActiveRecord::Base
 	has_and_belongs_to_many :exams
 	has_many :assessments
 
+	def name
+		"#{lastname}, #{firstname}"
+	end
+
 	def total(course, limit=Time.now)
 		groups = course.groups
 		weeks = course.weeks.where("start <= Datetime(?)", limit)

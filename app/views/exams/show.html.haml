@@ -14,9 +14,26 @@
 
 
 %h2 Rooms
-%ul
-	- @exam.rooms.order(:name).each do |r|
-		%li= r.name
+- if @exam.seats?
+	%table.table.table-striped
+		%thead
+			%tr
+				%th Room
+				%th # students
+				%th From student (incl.)
+				%th To student (incl.)
+		%tbody
+			- @exam.roominfo.each do |r|
+				%tr
+					%td= r[:name]
+					%td= r[:count]
+					%td= r[:first]
+					%td= r[:last]
+- else
+	%ul
+		- @exam.rooms.order(:name).each do |r|
+			%li
+				= r.name + "(" + @exam.exam_seats.where(:room_id => r.id).count.to_s + ")"
 
 %h2 Seat Assignment
 - if @exam.seats?

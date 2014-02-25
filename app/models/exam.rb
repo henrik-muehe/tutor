@@ -20,6 +20,21 @@ class Exam < ActiveRecord::Base
 		false
 	end
 
+	def roominfo
+		nil if not seats?
+		rooms.order(:name).map do |room|
+			students = exam_seats.includes(:student).where("room_id = ? and student_id is not null", room.id)
+					.to_a.sort_by { |seat|  ActiveSupport::Inflector.transliterate(seat.student.name) }
+					.map { |seat| seat.student }
+			{
+				name: room.name,
+				count: exam_seats.where(:room_id => room.id).count,
+				first: students.first.name,
+				last: students.last.name,
+			}
+		end
+	end
+
 	def original_import=(v)
 		write_attribute(:original_import, File.read(v.path, :encoding => 'iso-8859-15'))
 
