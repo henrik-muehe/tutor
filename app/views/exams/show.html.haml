@@ -1,19 +1,20 @@
-%p#notice.hidden-print= notice
+%p#notice= notice
 
 %h1 
 	Exam #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
 	= link_to '(edit)', edit_exam_path(@exam), :class => "hidden-print"
 
-%h2.hidden-print Tasks
-%ul.hidden-print
-	- @exam.exam_tasks.order(:number).each do |r|
-		%li
-			= r.number
-			= r.name
-			(#{r.max_points})
+.hidden-print
+	%h2 Tasks
+	%ul
+		- @exam.exam_tasks.order(:number).each do |r|
+			%li
+				= r.number
+				= r.name
+				(#{r.max_points})
 
 
-%h2.hidden-print Rooms
+%h2 Rooms
 - if @exam.seats?
 	%table.table.table-striped
 		%thead
@@ -35,17 +36,18 @@
 			%li
 				= r.name + "(" + @exam.exam_seats.where(:room_id => r.id).count.to_s + ")"
 
-%h2.hidden-print Seat Assignment
-- if @exam.seats?
-	%ul.hidden-print
-		%li= link_to 'Printout for room door', { action: :print_roomdoor }
-		%li= link_to 'Printout for signatures', { action: :print_signatures }
-		%li= link_to 'Export seats to TUMonline', { action: :export_seats }
-		%li= link_to 'Export grades to TUMonline', { action: :export_grades }
-	= button_to 'Reset seats', { action: :reset_seats }, :class => "btn btn-danger btn-xs", :data => { :confirm => 'Are you sure?' }
-- else
-	= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"
+.hidden-print
+	%h2 Seat Assignment
+	- if @exam.seats?
+		%ul
+			%li= link_to 'Printout for room door', { action: :print_roomdoor }
+			%li= link_to 'Printout for signatures', { action: :print_signatures }
+			%li= link_to 'Export seats to TUMonline', { action: :export_seats }
+			%li= link_to 'Export grades to TUMonline', { action: :export_grades }
+		= button_to 'Reset seats', { action: :reset_seats }, :class => "btn btn-danger btn-xs", :data => { :confirm => 'Are you sure?' }
+	- else
+		= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"
 
-%h2.hidden-print Grades
-%ul.hidden-print
-	%li= link_to 'Grade it', { action: :grade, magictoken: @exam.magictoken }
+	%h2 Grades
+	%ul
+		%li= link_to 'Grade it', { action: :grade, magictoken: @exam.magictoken }
