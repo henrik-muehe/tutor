@@ -16,16 +16,9 @@
 		%div.pull-left(style="min-width:180px; font-weight: bold")
 			{{dateFormat datetime format="HH:mm:ss"}} &lt;{{nickname}}&gt;
 		%div
-			{{message}}
+			{{{message}}}
 
 :javascript
-	String.prototype.hashCode = function(){
-	    var i,hash=0;
-	    for (i=0; i<this.length; i++) {
-	    	hash+=this[i].charCodeAt() * (i+1);
-	    }
-	    return Math.abs(hash)%10000;
-	};
 	var RColor = function() {
 		this.hue			= Math.random()
 		this.goldenRatio 	= 0.618033988749895;
@@ -138,6 +131,7 @@
 			template = Handlebars.compile($("#message").html().trim())
 			for m in set
 				m.color = colorForName(m.nickname)
+				m.message = Handlebars.Utils.escapeExpression(m.message) if not m.admin
 				c.append(template(m))
 			down()
 
