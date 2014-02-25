@@ -1,11 +1,11 @@
-%p#notice= notice
+%p#notice.hidden-print= notice
 
 %h1 
 	Exam #{@exam.name}, #{@exam.start.strftime("%d.%m.%y")}
 	= link_to '(edit)', edit_exam_path(@exam)
 
-%h2 Tasks
-%ul
+%h2.hidden-print Tasks
+%ul.hidden-print
 	- @exam.exam_tasks.order(:number).each do |r|
 		%li
 			= r.number
@@ -13,7 +13,7 @@
 			(#{r.max_points})
 
 
-%h2 Rooms
+%h2.hidden-print Rooms
 - if @exam.seats?
 	%table.table.table-striped
 		%thead
@@ -35,7 +35,7 @@
 			%li
 				= r.name + "(" + @exam.exam_seats.where(:room_id => r.id).count.to_s + ")"
 
-%h2 Seat Assignment
+%h2.hidden-print Seat Assignment
 - if @exam.seats?
 	%ul
 		%li= link_to 'Printout for room door', { action: :print_roomdoor }
@@ -46,6 +46,6 @@
 - else
 	= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"
 
-%h2 Grades
-%ul
+%h2.hidden-print Grades
+%ul.hidden-print
 	%li= link_to 'Grade it', { action: :grade, magictoken: @exam.magictoken }
