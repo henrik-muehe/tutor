@@ -3,7 +3,12 @@ class ChatController < ApplicationController
   	@messages = ChatMessage.where(:room => params[:room])
   end
 
+  def nickname
+
+  end
+
   def write
+    params[:nickname].gsub!(/[^a-zA-Z0-9]/, "")
   	ChatMessage.create({
   		room: params[:room],
   		message: {
