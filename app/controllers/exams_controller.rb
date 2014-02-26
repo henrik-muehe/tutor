@@ -58,6 +58,7 @@ class ExamsController < ApplicationController
   def grade_save
     ActiveRecord::Base.transaction do
       params["points"].each do |id,str|
+        ExamAssessment.where(:exam_id => @exam.id, :student_id => id).remove
         ExamAssessment.create({
           exam: @exam,
           student: Student.find(id),
