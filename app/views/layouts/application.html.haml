@@ -9,7 +9,7 @@
 		= javascript_include_tag "application", "data-turbolinks-track" => true, :debug => true
 		= csrf_meta_tags
 		:css
-			.container-full { max-width: 9999px !important; margin: 0 auto; margin: 10px }
+			.container-full { max-width: 9999px !important; margin: 10px }
 
 	%body
 		- if current_user && current_user.role == "admin"
@@ -66,7 +66,7 @@
 						%form.navbar-form.navbar-right.pull-right(action="/users/sign_in" method="post")
 							%button.btn-sm.btn.btn-submit(type="submit") Login
 					- else
-						%ul.nav.navbar-nav.navbar-right
+						%ul.nav.navbar-nav.navbar-right(style="margin-right: 15px")
 							- if current_user.role == "admin"
 								%li.navbar-text
 									Switch course:
@@ -83,7 +83,6 @@
 											$("#remember_user").bootstrapSwitch();
 							%li.navbar-form
 								= button_to 'Logout', destroy_user_session_path, { :method => :get, :class => "btn btn-xs btn-default form-control" }
-							%li.navbar-text
 
 
 		%div.container-full

@@ -1,192 +1,149 @@
 %script(src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js")
 %script(src="/howler.min.js")
+%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js")
+%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/react-with-addons.js")
 
 %h1.hidden-xs Chat #{params[:room]}
 
+:css
+	.chatmessage { font-family: Courier; background-color: attr(data-usercolor color); }
+	.chatmessage .timestamp { float:left; min-width: 80px; font-weight: bold; }
+	.chatmessage .nickname { float: left; min-width: 110px; font-weight: bold; }
+	.chatform {}
 
 .chatbox
+
+/
+	runCommands = (set) =>
+	for m in set
+	flash() if m.message == "FLASH" and m.admin == true
+	window.location.reload() if m.message == "RELOAD" and m.admin == true
+	window.location = m.message.substr(9) if m.message.indexOf("REDIRECT") == 0
+	sound.play() if m.message.indexOf("BEEP") == 0
+
+
 :plain
 	<script type="text/jsx">
-		/*
-			%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js")
-			%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/react-with-addons.min.js")
+	/** @jsx React.DOM */
 
-		var ChatBox = React.createClass({
-		  render: function() {
-		    return (
-		      React.DOM.div({
-		        className: 'chatbox',
-		        children: 'Some text'
-		      })
-		    );
-		  }
-		});
-		React.renderComponent(
-		  ChatBox({}),
-		  $('.chatbox')[0]
-		);*/
-	</script>
-
-
-
-%div#notice(style="opacity:0.6; background-color:red; width:100%; height:100%; z-index:999;top:0; left:0;position:fixed")
-
-%div#wrapper(style="overflow-y:scroll")
-	%div#chat(style="font-family: courier; height: 100%")
-
-%div(style="margin-top:5px")
-	%form.chat
-		%input#new-msg.form-control(autofocus="autofocus")
-
-%script#message(type="text/x-handlebars-template")
-	%div(style=" background-color: {{color}}")
-		%div.pull-left(style="min-width:180px; font-weight: bold")
-			{{dateFormat datetime format="HH:mm:ss"}} &lt;{{nickname}}&gt;
-		%div
-			{{{message}}}
-
-
-
-:javascript
-	var RColor = function() {
-		this.hue			= Math.random()
-		this.goldenRatio 	= 0.618033988749895;
-		this.hexwidth		= 2;
-	};
-
-	RColor.prototype.hsvToRgb = function (h,s,v) {
-		var	h_i	= Math.floor(h*6),
-			f 	= h*6 - h_i,
-			p	= v * (1-s),
-			q	= v * (1-f*s),
-			t	= v * (1-(1-f)*s),
-			r	= 255,
-			g	= 255,
-			b	= 255;
-		switch(h_i) {
-			case 0:	r = v, g = t, b = p;	break;
-			case 1:	r = q, g = v, b = p;	break;
-			case 2:	r = p, g = v, b = t;	break;
-			case 3:	r = p, g = q, b = v;	break;
-			case 4: r = t, g = p, b = v;	break;
-			case 5: r = v, g = p, b = q;	break;
-		}
-		return [Math.floor(r*256),Math.floor(g*256),Math.floor(b*256)];
-	};
-
-	RColor.prototype.padHex = function(str) {
-		if(str.length > this.hexwidth) return str;
-		return new Array(this.hexwidth - str.length + 1).join('0') + str;
-	};
-
-	RColor.prototype.get = function(h,hex,saturation,value) {
-		this.hue=h
-		this.hue += this.goldenRatio;
-		this.hue %= 1;
-		if(typeof saturation !== "number")	saturation = 0.5;
-		if(typeof value !== "number")		value = 0.95;
-		var rgb = this.hsvToRgb(this.hue,saturation,value);
-		if(hex)
-			return "#" +  this.padHex(rgb[0].toString(16))
-						+ this.padHex(rgb[1].toString(16))
-						+ this.padHex(rgb[2].toString(16));
-		else 
-			return rgb;
-	};
-
-
-:coffeescript
-	sound = new Howl {urls: ['/me.wav']}
-
-	stringToFloat = (s) ->
-		Math.abs(CryptoJS.MD5(s).words[3])/Math.pow(2,32)
-
-	colorForName = (s) ->
-		c=new RColor()
-		console.log stringToFloat(s)
-		c.get(stringToFloat(s),true,0.15,0.99)
-
-	Handlebars.registerHelper 'dateFormat', (context, block)->
-		if moment
-			f = block.hash.format || "MMM Do, YYYY";
-			return moment(new Date(Number(context)*1000)).format(f);
-		else
-			return context;
-
-	$(document).ready ->
-		flash_state = 1
-		flash_enabled=false
-		$("#notice").hide()
-		setInterval =>
-			if flash_enabled 
-				if flash_state == 0
-					$("#notice").show()
-					document.title= '** HERE **'
-					flash_state=1
-				else
-					$("#notice").hide()
-					document.title= '** LOOK **'
-					flash_state=0
-		, 500
-		flash = ->
-			flash_enabled = true
-		unflash = ->
-			flash_enabled = false
-			document.title="Chat"
-			$("#notice").hide()
-			$("#new-msg").focus() if document.activeElement != $("#new-msg")[0]
-		$(document).click -> unflash()
-		$(document).keydown -> unflash()
-
-		down = ->
-			$("#wrapper").scrollTop($("#wrapper")[0].scrollHeight);
-
-		resize = -> 
-			$("#wrapper").height("auto")
-			$("#wrapper").height($(window).innerHeight() - ($("body").height() - $("#wrapper").height()) - 35)
-			down()
-		$(window).resize resize
-		resize()
-
-		window.lastid = 0
-		messages = []
-
-		runCommands = (set) =>
-			for m in set
-				flash() if m.message == "FLASH" and m.admin == true
-				window.location.reload() if m.message == "RELOAD" and m.admin == true
-				window.location = m.message.substr(9) if m.message.indexOf("REDIRECT") == 0
-				sound.play() if m.message.indexOf("BEEP") == 0
-
-		render = (set)=>
-			c = $("#chat")
-			template = Handlebars.compile($("#message").html().trim())
-			for m in set
-				m.color = colorForName(m.nickname)
-				m.message = Handlebars.Utils.escapeExpression(m.message) if not m.admin
-				c.append(template(m))
-			down()
-
-		refresh = =>
-			$.get window.location + "/refresh/" + window.lastid, (res)->
-				return if res.length == 0
-				messages = messages.concat(res)
-				if window.lastid != 0
-					runCommands(res) 
-					document.title= '** New Messages **'
-				window.lastid=messages[messages.length-1].id
-				render(res)
-
-		$("form.chat").submit ->
-			msg=$("#new-msg").val()
-			setTimeout((-> document.title = 'Chat'), 1500)
-
-			$.post(window.location,{
-				msg: msg
-			})
-
-			$("#new-msg").val('')
+	var ChatForm = React.createClass({
+		handleAutofocus: function() {
+			if (this.props.autofocus && document.activeElement != this.refs.message.getDOMNode()) {
+				$(this.refs.message.getDOMNode()).focus();
+			}
+		},
+		handleSubmit: function() {
+			var message = this.refs.message.getDOMNode().value.trim();
+			if (!message) { return false; }
+			this.props.onMessageSubmit(message);
+			this.refs.message.getDOMNode().value='';
 			return false;
+		},
+		componentDidMount: function() {
+			$(document).click(this.handleAutofocus);
+			this.handleAutofocus();
+		},
+		render: function() {
+			return(
+				<form className="chatform" onSubmit={this.handleSubmit}>
+					<input className="form-control" type="text" placeholder="your funny message" ref="message" onClick={this.handleSubmit} />
+				</form>
+			);
+		}
+	});
 
-		setInterval(refresh, 2000)
-		refresh()
+	var ChatBox = React.createClass({
+		refresh: function() {
+			$.ajax({
+				url: window.location + "/refresh/"+this.state.lastid,
+				dataType: 'json',
+				success: function(data) {
+					if (data.messages.length == 0) { return; }
+					while (this.state.messages.length > 0 && this.state.messages[this.state.messages.length-1].id == -1)
+						this.state.messages.pop()
+					this.setState({lastid: data.messages[data.messages.length-1].id, messages: this.state.messages.concat(data.messages)});
+				}.bind(this),
+				error: function(xhr, status, err) {
+					console.error(this.props.url, status, err.toString());
+				}.bind(this)
+			});
+		},
+		handleMessageSubmit: function(message) {
+			var messages=this.state.messages;
+			var newMessages=messages.concat([{
+				nickname: 'sending', 
+				datetime: Math.floor(new Date().getTime()/1000), 
+				message: message, 
+				id:-1
+			}])
+			this.setState({ 
+				lastid: this.state.lastid,
+				messages: newMessages 
+			});
+			$.post(window.location,{ msg: message });
+		},
+		getInitialState: function() {
+			return { lastid: 0, messages: [] };
+		},
+		componentWillMount: function() {
+			setInterval(this.refresh, this.props.pollInterval);
+			this.refresh();
+		},
+		render: function() {
+			return (
+				<div className="chatbox">
+					<ChatList messages={this.state.messages} />
+					<ChatForm onMessageSubmit={this.handleMessageSubmit} autofocus={true} />
+				</div>
+			);
+		}
+	});
+
+	var ChatList = React.createClass({
+		scrollDown: function() {
+			var wrapper = $(this.refs.wrapper.getDOMNode());
+			wrapper.scrollTop(wrapper[0].scrollHeight);
+		},
+		handleResize: function() {
+			var wrapper = $(this.refs.wrapper.getDOMNode());
+			wrapper.height("auto");
+			wrapper.height($(window).innerHeight() - ($("body").height() - wrapper.height()) - 15);
+			this.scrollDown();
+		},
+		componentDidUpdate: function(a,b) { 
+			this.scrollDown(); 
+		},
+		componentDidMount: function() {
+			$(window).resize(this.handleResize);
+			this.handleResize();
+		},
+		render: function() {
+			var list_messages = this.props.messages.map(function (comment) {
+				return <ChatMessage id={comment.id} nickname={comment.nickname} timestamp={comment.datetime}>{comment.message}</ChatMessage>;
+			});
+			return (
+				<div style={{"overflow-y": "scroll"}} ref="wrapper">
+					<div className="chatlist">{ list_messages }</div>
+				</div>
+			);
+		}
+	})
+
+	var ChatMessage = React.createClass({
+		render: function() {
+			return (
+				<div className="chatmessage" style={{"background-color": window.stringColor(this.props.nickname, true, 0.15, 0.99)}}>
+					<div className="timestamp">{ moment(new Date(Number(this.props.timestamp)*1000)).format("HH:mm:ss") }</div>
+					<div className="nickname">{ "<"+this.props.nickname.substr(0,10)+">" }</div>
+					<div className="message">{ this.props.children }</div>
+				</div>
+			);
+		}
+	});
+
+	React.renderComponent(
+	  	<ChatBox pollInterval="1000"></ChatBox>
+	  ,
+	  $('.chatbox')[0]
+	);
+	</script>
