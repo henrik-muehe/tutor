@@ -1,7 +1,5 @@
 %script(src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js")
 %script(src="/howler.min.js")
-%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js")
-%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/react-with-addons.min.js")
 
 %h1.hidden-xs Chat #{params[:room]}
 
@@ -9,7 +7,11 @@
 .chatbox
 :plain
 	<script type="text/jsx">
-		/*var ChatBox = React.createClass({
+		/*
+			%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js")
+			%script(src="//cdnjs.cloudflare.com/ajax/libs/react/0.8.0/react-with-addons.min.js")
+
+		var ChatBox = React.createClass({
 		  render: function() {
 		    return (
 		      React.DOM.div({
@@ -94,7 +96,7 @@
 
 
 :coffeescript
-	sound = new Howl {urls: ['http://www.qsl.net/yo5ofh/cw/wav/me.wav']}
+	sound = new Howl {urls: ['/me.wav']}
 
 	stringToFloat = (s) ->
 		Math.abs(CryptoJS.MD5(s).words[3])/Math.pow(2,32)
