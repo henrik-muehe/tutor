@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140225164442) do
+ActiveRecord::Schema.define(version: 20140226105122) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20140225164442) do
     t.integer  "student_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "status"
   end
 
   add_index "exam_assessments", ["exam_id"], name: "index_exam_assessments_on_exam_id"
