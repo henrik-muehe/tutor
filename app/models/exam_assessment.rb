@@ -14,11 +14,22 @@ class ExamAssessment < ActiveRecord::Base
 		exam_task_assessments.destroy_all
 
 		v.gsub!(/[\s\t\r\n]/, "")
-		v.split("+").each_with_index do |g,i|
-			et = exam.exam_tasks.where(:number => (i+1)).first
-			points = g.to_f
-			points = nil if not g.match(/^\d+[.,]?\d*$/)
-			exam_task_assessments << ExamTaskAssessment.new({ :points => points, :exam_task => et })
+
+		if v == "x" || v == "X" 
+			status = :noshow
+		elsif v == "0"
+			exam.exam_tasks.each do |task|
+				exam_task_assessments << ExamTaskAssessment.new({ :points => 0, :exam_task => task })
+			end
+			status = :attended
+		else
+			v.split("+").each_with_index do |g,i|
+				et = exam.exam_tasks.where(:number => (i+1)).first
+				points = g.to_f
+				points = nil if not g.match(/^\d+[.,]?\d*$/)
+				exam_task_assessments << ExamTaskAssessment.new({ :points => points, :exam_task => et })
+			end
+			status = :attended
 		end
 	end
 
