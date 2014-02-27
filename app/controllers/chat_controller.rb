@@ -32,6 +32,7 @@ class ChatController < ApplicationController
       }
     end
     messages.select! { |m| m[:message] && m[:message].length > 0 }
-    render json: messages
+    users = []
+    render json: { messages: messages, users: users }
   end
 end

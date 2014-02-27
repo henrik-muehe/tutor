@@ -57,12 +57,15 @@ class ExamsController < ApplicationController
   end
 
   def grade_save
-    params["points"].each do |id,str|
-      ExamAssessment.create({
-        exam: @exam,
-        student: Student.find(id),
-        assessment_string: str
-      })
+    ActiveRecord::Base.transaction do
+      params["points"].each do |id,str|
+        ExamAssessment.where(exam_id: @exam.id, student_id: id).destroy_all
+        ExamAssessment.create({
+          exam: @exam,
+          student: Student.find(id),
+          assessment_string: str
+        })
+      end
     end
     redirect_to :action => :grade, :magictoken => params[:magictoken]
   end
