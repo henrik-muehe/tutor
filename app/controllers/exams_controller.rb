@@ -4,6 +4,7 @@ require 'tempfile'
 require 'digest/sha1'
 
 class ExamsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:grade_save]
   before_filter :authenticate_user!, except: [:grade, :grade_save]
   before_filter :admincheck, except: [:grade, :grade_save]
   before_filter :magiccheck, only: [:grade, :grade_save]
