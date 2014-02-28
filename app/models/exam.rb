@@ -12,6 +12,8 @@ class Exam < ActiveRecord::Base
 	has_many :exam_seats
 	has_and_belongs_to_many :students
 
+	has_many :exam_assessments
+
 	def seats?
 		exam_seats.length > 0
 	end

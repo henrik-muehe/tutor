@@ -5,6 +5,19 @@
 %p.alert.alert-danger#notice
 	Select a letter to add grades for. FIRST get the exams, THEN select the letter. Exams act as a mutual exclusion, this system does not.
 
+%div
+	%b Students total: 
+	= @exam.students.count
+	&nbsp;
+	%b Students with points:
+	= @exam.exam_assessments.where(:status => "attended").count
+	&nbsp;
+	%b Students noshow:
+	= @exam.exam_assessments.where(:status => "noshow").count
+	&nbsp;
+	%b Students missing:
+	= @exam.students.count - @exam.exam_assessments.count
+
 %h2
 	- ("A".."Z").each do |l|
 		%a.letter{ :href => "#", "data-letter" => l }= l
