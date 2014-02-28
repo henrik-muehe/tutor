@@ -46,12 +46,14 @@
 			$("input").change (e)->
 				$.get '?check='+encodeURIComponent($(e.target).val()), (res)=>
 					icon = $(e.target).closest("td").next().find("i")
+					icon.parent().find("span").remove()
 					if res.length == 0
 						icon.addClass("glyphicon-ok")
 						icon.removeClass("glyphicon-remove")
 						icon.addClass("text-success")
 						icon.removeClass("text-danger")
 						$(icon).tooltip({html: true, title:'looks good.'})
+						icon.parent().prepend($("<span><b>"+(eval($(e.target).val()))+"  </b></span>"))
 					else
 						icon.removeClass("glyphicon-ok")
 						icon.addClass("glyphicon-remove")
