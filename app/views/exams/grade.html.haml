@@ -39,7 +39,9 @@
 				if p.assessment_string.length == 0
 					row.append('<td class="text-center"><i style="font-size:15pt" class="status glyphicon glyphicon-remove"></i></td>')
 				else
-					row.append('<td class="text-center"><i style="font-size:15pt" class="status glyphicon glyphicon-ok"></i></td>')
+					pts = ""
+					pts = eval(p.assessment_string) if p.assessment_string? && p.assessment_string.indexOf('+') > 0
+					row.append('<td class="text-center"><span><b>'+(pts)+'  </b></span><i style="font-size:15pt" class="status glyphicon glyphicon-ok"></i></td>')
 				$("tbody").append(row)
 
 			# XXX this should really use a view binding
