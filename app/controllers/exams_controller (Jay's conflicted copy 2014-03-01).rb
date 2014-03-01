@@ -8,7 +8,7 @@ class ExamsController < ApplicationController
   before_filter :authenticate_user!, except: [:grade, :grade_save]
   before_filter :admincheck, except: [:grade, :grade_save]
   before_filter :magiccheck, only: [:grade, :grade_save]
-  before_action :set_exam, only: [:show, :edit, :update, :destroy, :assign_seats, :reset_seats, :print_roomdoor, :print_signatures, :export_seats, :export_grades, :grade, :grade_save, :apply_score, :score]
+  before_action :set_exam, only: [:show, :edit, :update, :destroy, :assign_seats, :reset_seats, :print_roomdoor, :print_signatures, :export_seats, :export_grades, :grade, :grade_save]
 
   def magiccheck
     render_403 unless Exam.where(id: params[:id], magictoken: params[:magictoken]).present?
@@ -33,32 +33,6 @@ class ExamsController < ApplicationController
 
   # GET /exams/1/edit
   def edit
-  end
-
-  def score
-
-  end
-
-  def apply_score
-    @exam.expr = params[:expr]
-    @exam.save
-    lambda = eval(params[:expr])
-
-    ActiveRecord::Base.transaction do
-      @exam.exam_grades.destroy_all
-      @exam.students.each do |s|
-        ea = ExamAssessment.where(student_id: s.id, exam_id: @exam.id).first
-        l = lambda.call(s,(ea.present? ? ea.total : nil))
-        g = ExamGrade.create({
-            student_id: s.id,
-            exam_id: @exam.id,
-            exam_assessment_id: ea.present? ? ea.id : nil,
-            grade: l.first,
-            remark: l.last
-        })
-      end
-    end
-    redirect_to action: :score
   end
 
   def grade
@@ -114,8 +88,9 @@ class ExamsController < ApplicationController
   end
 
   def export_grades
+    raise "implement me"
     file="/tmp/export-grades-#{Time.now.to_i}.csv"
-    @exam.export_grades(file)
+    @exam.export(file)
     send_file file, :type => "text/csv", :disposition => "attachment"
   end
 

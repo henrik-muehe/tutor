@@ -8,15 +8,6 @@
 		= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true, :debug => true
 		= javascript_include_tag "application", "data-turbolinks-track" => true, :debug => true
 		= csrf_meta_tags
-		%style(type="text/css" media="print")
-			:plain
-				@page 
-				{
-					size: auto;   /* auto is the current printer page size */
-					margin: 0mm;  /* this affects the margin in the printer settings */
-				}
-
-				body { margin: 10mm; }
 		:css
 			.container-full { max-width: 9999px !important; margin: 10px }
 
@@ -38,6 +29,8 @@
 									%b.caret
 
 									%ul.dropdown-menu
+										%li
+											%a(href="/analyses/") Analyses
 										%li
 											%a(href="/load/") Load
 										%li
@@ -62,8 +55,6 @@
 									%b.caret
 
 									%ul.dropdown-menu
-										%li
-											%a(href="/analyses/") Analyses
 										%li
 											%a(href="/courses/") Courses
 										%li

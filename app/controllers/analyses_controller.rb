@@ -8,6 +8,7 @@ class AnalysesController < ApplicationController
 	def index
 		@analyses = Analysis.all
 		@analyses = @analyses.where(:admin => false) if current_user.nil? or (current_user.role != "admin" and current_user.role != "analyst")
+		@analyses = @analyses.order(:exam)
 	end
 
 	# GET /analyses/1
@@ -19,6 +20,7 @@ class AnalysesController < ApplicationController
 	def execute
 		a = Analysis.where(:id => params["id"]).first
 		a = Analysis.new if not a.present?
+		@exam = Exam.first
 		a.query=params["query"]
 		a.view=params["view"]
 		render :partial => "analysis", :locals => { :a => a }, :layout => false
@@ -26,7 +28,7 @@ class AnalysesController < ApplicationController
 
 	# GET /analyses/new
 	def new
-		@analysis = Analysis.new
+		@analysis = Analysis.new(exam: @exam.present?)
 	end
 
 	# GET /analyses/1/edit
@@ -77,10 +79,11 @@ class AnalysesController < ApplicationController
 		# Use callbacks to share common setup or constraints between actions.
 		def set_analysis
 			@analysis = Analysis.find(params[:id])
+			@exam = params[:exam_id] ? Analysis.find(params[:exam_id]) : Exam.first
 		end
 
 		# Never trust parameters from the scary internet, only allow the white list through.
 		def analysis_params
-			params.require(:analysis).permit(:name, :query, :admin, :view)
+			params.require(:analysis).permit(:name, :query, :admin, :view, :exam)
 		end
 end

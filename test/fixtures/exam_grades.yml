@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  grade: 
+  grade: 
+  remark: MyText
+  exam_id: 
+  student_id: 
+  exam_assessment_id: 
+
+two:
+  grade: 
+  grade: 
+  remark: MyText
+  exam_id: 
+  student_id: 
+  exam_assessment_id: 

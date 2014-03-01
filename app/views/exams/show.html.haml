@@ -43,11 +43,6 @@
 			%li= link_to 'Printout for room door', { action: :print_roomdoor }
 			%li= link_to 'Printout for signatures', { action: :print_signatures }
 			%li= link_to 'Export seats to TUMonline', { action: :export_seats }
-			%li= link_to 'Export grades to TUMonline', { action: :export_grades }
 		= button_to 'Reset seats', { action: :reset_seats }, :class => "btn btn-danger btn-xs", :data => { :confirm => 'Are you sure?' }
 	- else
 		= button_to 'Assign seats', { action: :assign_seats } , :class => "btn"
-
-	%h2 Grades
-	%ul
-		%li= link_to 'Grade it', { action: :grade, magictoken: @exam.magictoken }

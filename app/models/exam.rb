@@ -13,13 +13,16 @@ class Exam < ActiveRecord::Base
 	has_and_belongs_to_many :students
 
 	has_many :exam_assessments
+	
+	has_many :exam_grades
+
 
 	def seats?
 		exam_seats.length > 0
 	end
 
 	def graded?
-		false
+		students.length == exam_grades.length
 	end
 
 	def roominfo
@@ -106,7 +109,9 @@ class Exam < ActiveRecord::Base
 					csv << p.to_hash.keys
 					first=false
 				end
-				p["REMARK"] = yield p["REGISTRATION_NUMBER"].to_i
+				data = yield p["REGISTRATION_NUMBER"].to_i
+				p["GRADE"] = data[0].to_s
+				p["REMARK"] = data[1].to_s
 				csv << p
 			end
 		end
@@ -114,7 +119,14 @@ class Exam < ActiveRecord::Base
 
 	def export_seats(filename)
 		export(filename) do |matrnr|
-			exam_seats.includes(:student).where("students.matrnr" => matrnr).first.seat_string
+			["", exam_seats.includes(:student).where("students.matrnr" => matrnr).first.seat_string]
+		end
+	end
+
+	def export_grades(filename)
+		export(filename) do |matrnr|
+			g = exam_grades.includes(:student).where("students.matrnr" => matrnr).first
+			[g.grade ? g.grade : "x" , g.remark]
 		end
 	end
 end

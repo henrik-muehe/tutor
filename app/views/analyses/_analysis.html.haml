@@ -1,11 +1,11 @@
 - begin
-  - r = a.execute(@course)
+  - r = a.execute(@course.id,@exam.present? ? @exam.id : nil)
   - if r.length == 0
     Empty result
   - else
     - keys = r[0].keys.select { |k| k.is_a? String }
     - if a.view.present?
-      = Haml::Engine.new(a.view).render(Object.new,:a => a, :r => r, :keys => keys, :course_id => @course.id)
+      = Haml::Engine.new(a.view).render(Object.new,:a => a, :r => r, :keys => keys, :course_id => @course.id, :exam_id => @exam.present? ? @exam.id : nil)
     - else
       %table.table.table-condensed.table-striped
         %thead

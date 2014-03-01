@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140228150146) do
+ActiveRecord::Schema.define(version: 20140226105122) do
 
   create_table "analyses", force: true do |t|
     t.string   "name"
@@ -20,7 +20,6 @@ ActiveRecord::Schema.define(version: 20140228150146) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "view"
-    t.boolean  "exam",       default: false
   end
 
   create_table "assessments", force: true do |t|
@@ -73,20 +72,6 @@ ActiveRecord::Schema.define(version: 20140228150146) do
   add_index "exam_assessments", ["exam_id"], name: "index_exam_assessments_on_exam_id"
   add_index "exam_assessments", ["student_id"], name: "index_exam_assessments_on_student_id"
 
-  create_table "exam_grades", force: true do |t|
-    t.decimal  "grade",              precision: 2, scale: 1
-    t.text     "remark"
-    t.integer  "exam_id"
-    t.integer  "student_id"
-    t.integer  "exam_assessment_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "exam_grades", ["exam_assessment_id"], name: "index_exam_grades_on_exam_assessment_id"
-  add_index "exam_grades", ["exam_id"], name: "index_exam_grades_on_exam_id"
-  add_index "exam_grades", ["student_id"], name: "index_exam_grades_on_student_id"
-
   create_table "exam_seats", force: true do |t|
     t.integer  "exam_id"
     t.integer  "student_id"
@@ -131,7 +116,6 @@ ActiveRecord::Schema.define(version: 20140228150146) do
     t.text     "seat_assignment"
     t.string   "magictoken"
     t.integer  "course_id"
-    t.text     "expr"
   end
 
   add_index "exams", ["course_id"], name: "index_exams_on_course_id"

@@ -44,6 +44,8 @@ Tutor::Application.routes.draw do
   get "exams/:id/export_grades", to: "exams#export_grades"
   get "exams/:id/grade/:magictoken", to: "exams#grade"
   post "exams/:id/grade/:magictoken", to: "exams#grade_save"
+  get "exams/:id/score", to: "exams#score"
+  post "exams/:id/score", to: "exams#apply_score"
 
   devise_for :users
 

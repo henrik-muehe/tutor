@@ -6,6 +6,7 @@
       %th Name
       - if current_user.role == "admin"
         %th Admin
+        %th Exam
         %th
         %th
         %th
@@ -16,6 +17,7 @@
         %td= analysis.name
         - if current_user.role == "admin"
           %td= analysis.admin
+          %td= analysis.exam
           %td= link_to 'Show', analysis
           %td= link_to 'Edit', edit_analysis_path(analysis)
           %td= button_to 'Destroy', analysis, :method => :delete
@@ -31,7 +33,7 @@
 
 %h1 Analyses results
 
-- @analyses.each do |a|
+- @analyses.where(exam: false).each do |a|
   %h2= a.name
   %a.togglelink Show SQL Source
   %div.toggle

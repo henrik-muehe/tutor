@@ -1,0 +1,37 @@
+.hidden-print.col-lg-4
+	%h1 Map points to grades
+
+	= form_tag({}, { method: :post }) do
+		.form-group
+			%textarea#score_method.rows(name="expr")= @exam.expr
+		.form-group
+			%button#run.btn.btn-danger Recalculate all grades and kill old grades (!)
+
+		= link_to 'Export grades to TUMonline', { action: :export_grades, id: @exam }
+
+.col-lg-8
+	- Analysis.all.where(exam: true).each do |a|
+		%h2= a.name
+		%a.togglelink Show SQL Source
+		%div.toggle
+			%pre= a.query
+		= render "analyses/analysis", :a => a
+
+:coffeescript
+	$(document).ready ->
+		$('.toggle').hide()
+	$('a.togglelink').click ->
+		console.log "clicked"
+		$('.toggle').hide()
+		$(this).next('.toggle').toggle('slow')
+		return false;
+
+:coffeescript
+	view=CodeMirror.fromTextArea $("#score_method")[0],
+		mode: 'text/x-ruby'
+		lineNumbers: true
+
+
+	$("#run").click =>
+		$.post window.location, { expr: view.getValue() }, (res) =>
+			console.log res
