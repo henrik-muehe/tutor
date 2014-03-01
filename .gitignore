@@ -17,3 +17,5 @@
 
 /vendor/assets/components
 /bin
+
+.DS_Store
