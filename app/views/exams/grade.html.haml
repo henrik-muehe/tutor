@@ -38,6 +38,7 @@
 	loadLetter = (l) ->
 		$("#notice").hide()
 		$.get '?letter='+l, (participants)->
+			count = 0
 			$("tbody tr").remove()
 			for p in participants
 				row = $("<tr/>")
@@ -52,10 +53,12 @@
 				if p.assessment_string.length == 0
 					row.append('<td class="text-center"><i style="font-size:15pt" class="status glyphicon glyphicon-remove"></i></td>')
 				else
+					count += 1 if p.assessment_string? and p.assessment_string != "x"
 					pts = ""
 					pts = eval(p.assessment_string) if p.assessment_string? && p.assessment_string.indexOf('+') > 0
 					row.append('<td class="text-center"><span><b>'+(pts)+'  </b></span><i style="font-size:15pt" class="status glyphicon glyphicon-ok"></i></td>')
 				$("tbody").append(row)
+			$("tbody").append($("<tr><td>"+count+"</td></tr>"))
 
 			# XXX this should really use a view binding
 			$("input").change (e)->

@@ -14,6 +14,10 @@ chown -R user: /src
 chown -R user: /usr/local/rvm/
 chmod 755 /src/sudoscript
 
+# start postfix
+rm -rf /var/spool/postfix/public/
+/etc/init.d/postfix restart
+
 /usr/sbin/sshd &
 /usr/sbin/cron
 #sudo -i -u user -- bash /src/sudoscript
